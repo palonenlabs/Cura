@@ -835,6 +835,7 @@ class configWizard(wx.wizard.Wizard):
 		self.otherMachineSelectPage = OtherMachineSelectPage(self)
 		self.customRepRapInfoPage = CustomRepRapInfoPage(self)
 		self.otherMachineInfoPage = OtherMachineInfoPage(self)
+		self.headZOffsetCalibration = headZOffsetCalibrationPage(self)
 
 		self.ultimaker2ReadyPage = Ultimaker2ReadyPage(self)
 
@@ -1292,3 +1293,222 @@ class headOffsetWizard(wx.wizard.Wizard):
 		else:
 			self.FindWindowById(wx.ID_FORWARD).Disable()
 		self.FindWindowById(wx.ID_BACKWARD).Disable()
+
+
+class headZOffsetWizard(wx.wizard.Wizard):
+	def __init__(self):
+		super(headZOffsetWizard, self).__init__(None, -1, "Head Z offset wizard")
+
+		self.Bind(wx.wizard.EVT_WIZARD_PAGE_CHANGED, self.OnPageChanged)
+		self.Bind(wx.wizard.EVT_WIZARD_PAGE_CHANGING, self.OnPageChanging)
+
+		self.mainPage = headZOffsetCalibrationPage(self)
+
+		self.FitToPage(self.mainPage)
+		self.GetPageAreaSizer().Add(self.mainPage)
+
+		self.RunWizard(self.mainPage)
+		self.Destroy()
+
+	def OnPageChanging(self, e):
+		e.GetPage().StoreData()
+
+	def OnPageChanged(self, e):
+		if e.GetPage().AllowNext():
+			self.FindWindowById(wx.ID_FORWARD).Enable()
+		else:
+			self.FindWindowById(wx.ID_FORWARD).Disable()
+		self.FindWindowById(wx.ID_BACKWARD).Disable()
+
+
+class headZOffsetCalibrationPage(InfoPage):
+	def __init__(self, parent):
+		super(headZOffsetCalibrationPage, self).__init__(parent, "Printer head Z offset calibration")
+
+		self.AddText('This wizard will help you in calibrating Marlin firmware printer head Z offset.')
+		self.AddText('Calibration setting will be stored to printer EEPROM for later use.')
+		self.AddText('Please make sure printer bed is clear of objects and head is clear to move.')
+		self.AddSeperator()
+
+		self.connectButton = self.AddButton('Connect to printer')
+		self.comm = None
+
+		self.infoBox = self.AddInfoBox()
+		self.textEntry = self.AddTextCtrl('')
+		self.textEntry.Enable(False)
+		self.resumeButton = self.AddButton('Resume')
+		self.resumeButton.Enable(False)
+
+		self.Bind(wx.EVT_BUTTON, self.OnConnect, self.connectButton)
+		self.Bind(wx.EVT_BUTTON, self.OnResume, self.resumeButton)
+
+	def OnConnect(self, e = None):
+		if self.comm is not None:
+			self.comm.close()
+			del self.comm
+			self.comm = None
+			wx.CallAfter(self.OnConnect)
+			return
+		self.connectButton.Enable(False)
+		self.comm = machineCom.MachineCom(callbackObject=self)
+		self.infoBox.SetBusy('Connecting to machine.')
+		self._wizardState = 0
+
+	def OnResume(self, e):
+		if self._wizardState == 2:
+			self._wizardState = 3
+			wx.CallAfter(self.infoBox.SetBusy, 'Printing initial calibration cross')
+
+			w = profile.getMachineSettingFloat('machine_width')
+			d = profile.getMachineSettingFloat('machine_depth')
+
+			gcode = gcodeGenerator.gcodeGenerator()
+			gcode.setExtrusionRate(profile.getProfileSettingFloat('nozzle_size') * 1.5, 0.2)
+			gcode.setPrintSpeed(profile.getProfileSettingFloat('bottom_layer_speed'))
+
+			gcode.addCmd('G28')
+			gcode.addMove(w/2, d/2)
+			gcode.addMove(z=-0.1)
+
+			self.comm.printGCode(gcode.list())
+			self.resumeButton.Enable(False)
+		elif self._wizardState == 4:
+			try:
+				float(self.textEntry.GetValue())
+			except ValueError:
+				return
+			profile.putPreference('extruder_offset_x1', self.textEntry.GetValue())
+			self._wizardState = 5
+			self.infoBox.SetAttention('Please measure the distance between the horizontal lines in millimeters.')
+			self.textEntry.SetValue('0.0')
+			self.textEntry.Enable(True)
+		elif self._wizardState == 5:
+			try:
+				float(self.textEntry.GetValue())
+			except ValueError:
+				return
+			profile.putPreference('extruder_offset_y1', self.textEntry.GetValue())
+			self._wizardState = 6
+			self.infoBox.SetBusy('Printing the fine calibration lines.')
+			self.textEntry.SetValue('')
+			self.textEntry.Enable(False)
+			self.resumeButton.Enable(False)
+
+			x = profile.getMachineSettingFloat('extruder_offset_x1')
+			y = profile.getMachineSettingFloat('extruder_offset_y1')
+			gcode = gcodeGenerator.gcodeGenerator()
+			gcode.setExtrusionRate(profile.getProfileSettingFloat('nozzle_size') * 1.5, 0.2)
+			gcode.setPrintSpeed(25)
+			gcode.addHome()
+			gcode.addCmd('T0')
+			gcode.addMove(50, 40, 0.2)
+			gcode.addPrime(15)
+			for n in xrange(0, 10):
+				gcode.addExtrude(50 + n * 10, 150)
+				gcode.addExtrude(50 + n * 10 + 5, 150)
+				gcode.addExtrude(50 + n * 10 + 5, 40)
+				gcode.addExtrude(50 + n * 10 + 10, 40)
+			gcode.addMove(40, 50)
+			for n in xrange(0, 10):
+				gcode.addExtrude(150, 50 + n * 10)
+				gcode.addExtrude(150, 50 + n * 10 + 5)
+				gcode.addExtrude(40, 50 + n * 10 + 5)
+				gcode.addExtrude(40, 50 + n * 10 + 10)
+			gcode.addRetract(15)
+
+			gcode.addCmd('T1')
+			gcode.addMove(50 - x, 30 - y, 0.2)
+			gcode.addPrime(15)
+			for n in xrange(0, 10):
+				gcode.addExtrude(50 + n * 10.2 - 1.0 - x, 140 - y)
+				gcode.addExtrude(50 + n * 10.2 - 1.0 + 5.1 - x, 140 - y)
+				gcode.addExtrude(50 + n * 10.2 - 1.0 + 5.1 - x, 30 - y)
+				gcode.addExtrude(50 + n * 10.2 - 1.0 + 10 - x, 30 - y)
+			gcode.addMove(30 - x, 50 - y, 0.2)
+			for n in xrange(0, 10):
+				gcode.addExtrude(160 - x, 50 + n * 10.2 - 1.0 - y)
+				gcode.addExtrude(160 - x, 50 + n * 10.2 - 1.0 + 5.1 - y)
+				gcode.addExtrude(30 - x, 50 + n * 10.2 - 1.0 + 5.1 - y)
+				gcode.addExtrude(30 - x, 50 + n * 10.2 - 1.0 + 10 - y)
+			gcode.addRetract(15)
+			gcode.addMove(z=15)
+			gcode.addCmd('M400')
+			gcode.addCmd('M104 T0 S0')
+			gcode.addCmd('M104 T1 S0')
+			self.comm.printGCode(gcode.list())
+		elif self._wizardState == 7:
+			try:
+				n = int(self.textEntry.GetValue()) - 1
+			except:
+				return
+			x = profile.getMachineSettingFloat('extruder_offset_x1')
+			x += -1.0 + n * 0.1
+			profile.putPreference('extruder_offset_x1', '%0.2f' % (x))
+			self.infoBox.SetAttention('Which horizontal line number lays perfect on top of each other? Front most line is zero.')
+			self.textEntry.SetValue('10')
+			self._wizardState = 8
+		elif self._wizardState == 8:
+			try:
+				n = int(self.textEntry.GetValue()) - 1
+			except:
+				return
+			y = profile.getMachineSettingFloat('extruder_offset_y1')
+			y += -1.0 + n * 0.1
+			profile.putPreference('extruder_offset_y1', '%0.2f' % (y))
+			self.infoBox.SetInfo('Calibration finished. Offsets are: %s %s' % (profile.getMachineSettingFloat('extruder_offset_x1'), profile.getMachineSettingFloat('extruder_offset_y1')))
+			self.infoBox.SetReadyIndicator()
+			self._wizardState = 8
+			self.comm.close()
+			self.resumeButton.Enable(False)
+
+	def mcLog(self, message):
+		print 'Log:', message
+
+	def mcTempUpdate(self, temp, bedTemp, targetTemp, bedTargetTemp):
+		if self._wizardState == 1:
+			if temp[0] >= 210 and temp[1] >= 210:
+				self._wizardState = 2
+				wx.CallAfter(self.infoBox.SetAttention, 'Please load both extruders with PLA.')
+				wx.CallAfter(self.resumeButton.Enable, True)
+				wx.CallAfter(self.resumeButton.SetFocus)
+
+	def mcStateChange(self, state):
+		if self.comm is None:
+			return
+		if self.comm.isOperational():
+			if self._wizardState == 0:
+				wx.CallAfter(self.infoBox.SetInfo, 'Homing printer ...')
+				
+				w = profile.getMachineSettingFloat('machine_width')
+				d = profile.getMachineSettingFloat('machine_depth')
+
+				self.comm.sendCommand('G28')
+				self.comm.sendCommand('G1 X%d Y%d Z-0.1 F%' % w/2, d/2, (profile.getProfileSettingFloat('print_speed') * 60))
+				self._wizardState = 1
+			if not self.comm.isPrinting():
+				if self._wizardState == 3:
+					self._wizardState = 4
+					wx.CallAfter(self.infoBox.SetAttention, 'Please measure the distance between the vertical lines in millimeters.')
+					wx.CallAfter(self.textEntry.SetValue, '0.0')
+					wx.CallAfter(self.textEntry.Enable, True)
+					wx.CallAfter(self.resumeButton.Enable, True)
+					wx.CallAfter(self.resumeButton.SetFocus)
+				elif self._wizardState == 6:
+					self._wizardState = 7
+					wx.CallAfter(self.infoBox.SetAttention, 'Which vertical line number lays perfect on top of each other? Leftmost line is zero.')
+					wx.CallAfter(self.textEntry.SetValue, '10')
+					wx.CallAfter(self.textEntry.Enable, True)
+					wx.CallAfter(self.resumeButton.Enable, True)
+					wx.CallAfter(self.resumeButton.SetFocus)
+
+		elif self.comm.isError():
+			wx.CallAfter(self.infoBox.SetError, 'Failed to establish connection with the printer.', 'http://wiki.ultimaker.com/Cura:_Connection_problems')
+
+	def mcMessage(self, message):
+		pass
+
+	def mcProgress(self, lineNr):
+		pass
+
+	def mcZChange(self, newZ):
+		pass

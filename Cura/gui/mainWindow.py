@@ -161,6 +161,8 @@ class mainWindow(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.OnBedLevelWizard, self.bedLevelWizardMenuItem)
 		self.headOffsetWizardMenuItem = expertMenu.Append(-1, _("Run head offset wizard..."))
 		self.Bind(wx.EVT_MENU, self.OnHeadOffsetWizard, self.headOffsetWizardMenuItem)
+		self.headZOffsetWizardMenuItem = expertMenu.Append(-1, _("Run head Z offset wizard..."))
+		self.Bind(wx.EVT_MENU, self.OnHeadZOffsetWizard, self.headZOffsetWizardMenuItem)
 
 		self.menubar.Append(expertMenu, _("Expert"))
 
@@ -511,6 +513,9 @@ class mainWindow(wx.Frame):
 
 	def OnHeadOffsetWizard(self, e):
 		configWizard.headOffsetWizard()
+
+	def OnHeadZOffsetWizard(self, e):
+		configWizard.headZOffsetWizard()
 
 	def OnExpertOpen(self, e):
 		ecw = expertConfig.expertConfigWindow(lambda : self.scene.sceneUpdated())

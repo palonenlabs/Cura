@@ -82,7 +82,7 @@ checkTool curl "curl: http://curl.haxx.se/"
 if [ $BUILD_TARGET = "win32" ]; then
 	#Check if we have 7zip, needed to extract and packup a bunch of packages for windows.
 	checkTool 7z "7zip: http://www.7-zip.org/"
-	checkTool mingw32-make "mingw: http://www.mingw.org/"
+	#checkTool mingw32-make "mingw: http://www.mingw.org/"
 fi
 #For building under MacOS we need gnutar instead of tar
 if [ -z `which gnutar` ]; then
@@ -223,9 +223,9 @@ if [ $BUILD_TARGET = "win32" ]; then
 	downloadURL http://sourceforge.net/projects/comtypes/files/comtypes/0.6.2/comtypes-0.6.2.win32.exe
 	downloadURL http://www.uwe-sieber.de/files/ejectmedia.zip
 	#Get the power module for python
-	rm -rf Power
+	#rm -rf Power
 	git clone https://github.com/GreatFruitOmsk/Power
-	rm -rf CuraEngine
+	#rm -rf CuraEngine
 	git clone ${CURA_ENGINE_REPO}
 fi
 
@@ -285,7 +285,7 @@ if [ $BUILD_TARGET = "win32" ]; then
 	rm -rf ${TARGET_DIR}/python/Lib/OpenGL/DLLS/gle*
 
     #Build the C++ engine
-	mingw32-make -C CuraEngine
+	cmake -C CuraEngine
 fi
 
 #add Cura
