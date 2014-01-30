@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-28 11:58+0200\n"
-"PO-Revision-Date: 2014-01-28 14:51+0200\n"
+"POT-Creation-Date: 2014-01-30 13:22+0200\n"
+"PO-Revision-Date: 2014-01-30 13:23+0200\n"
 "Last-Translator: Henry Palonen <henry.palonen@palonenlabs.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fi_FI\n"
@@ -18,11 +18,11 @@ msgstr ""
 "X-Generator: Poedit 1.6.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:546
+#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:551
 msgid "A new version of Cura is available, would you like to download?"
 msgstr "Uusi versio Curasta on saatavilla - päivitetäänkö ?"
 
-#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:546
+#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:551
 msgid "New version available"
 msgstr "Uusi versio saatavilla"
 
@@ -127,7 +127,7 @@ msgstr "Millainen tulostimesi on:"
 
 #: Cura/gui/configWizard.py:316
 msgid "Other (Ex: RepRap, MakerBot)"
-msgstr "Muu (esim. RepRam, MakerBot)"
+msgstr "Muu (esim. Minifactory, RepRap, MakerBot)"
 
 #: Cura/gui/configWizard.py:319
 msgid ""
@@ -273,7 +273,7 @@ msgstr "Päätyrajat:"
 msgid "Show error log"
 msgstr "Näytä virheloki"
 
-#: Cura/gui/configWizard.py:510
+#: Cura/gui/configWizard.py:510 Cura/gui/configWizard.py:1381
 msgid "Connecting to machine."
 msgstr "Kytkeydytään tulostimeen"
 
@@ -303,7 +303,7 @@ msgstr "Pään lämpötila: %d"
 msgid "Communication State: %s"
 msgstr "Yhteyden tila: %s"
 
-#: Cura/gui/configWizard.py:583
+#: Cura/gui/configWizard.py:583 Cura/gui/configWizard.py:1515
 msgid "Failed to establish connection with the printer."
 msgstr "Kommunikaatio tulostimen kanssa epäonnistui."
 
@@ -401,6 +401,63 @@ msgstr ""
 "Virhe: Sarjaportin avaus epäonnistui.\n"
 "Jos tämä toistuu, ole hyvä ja kytke tulostin uudelleen USB-portiin."
 
+#: Cura/gui/configWizard.py:1300
+msgid "Head Z offset wizard"
+msgstr "Aja tulostusalustan korkeuden säätö..."
+
+#: Cura/gui/configWizard.py:1326
+msgid "Printer head Z offset calibration"
+msgstr "Tulostusalustan korkeuden säätö"
+
+#: Cura/gui/configWizard.py:1328
+msgid "This wizard will help you in calibrating printer head Z offset."
+msgstr "Tämä apuri avustaa sinua tulostuskorkeuden säädössä"
+
+#: Cura/gui/configWizard.py:1329
+msgid ""
+"Please make sure printer bed is clear of objects and head is clear to move."
+msgstr ""
+"Ole hyvä ja tarkista että tulostusalusta on tyhjä ja tulostuspää voi liikkua "
+"vapaasti."
+
+#: Cura/gui/configWizard.py:1331
+msgid ""
+"Please adjust height with 'Up' and 'Down' buttons until normal\n"
+"A4 paper just barely moves between extruder nozzle and bed."
+msgstr ""
+"Säädä tulostuspään korkeutta 'Ylös' ja 'Alas' napeilla niin että saat juuri "
+"ja juuri\n"
+"liikuteltua A4-paperia alustan ja tulostuspään välillä."
+
+#: Cura/gui/configWizard.py:1333
+msgid "Connect to printer"
+msgstr "Yhdistä tulostimeen"
+
+#: Cura/gui/configWizard.py:1338
+msgid "Up"
+msgstr "Ylös"
+
+#: Cura/gui/configWizard.py:1340
+msgid "Down"
+msgstr "Alas"
+
+#: Cura/gui/configWizard.py:1343
+msgid "OK, extruder touches paper now"
+msgstr "OK, nyt tulostuspää koskettaa paperia"
+
+#: Cura/gui/configWizard.py:1434
+#, python-format
+msgid "Done! Z calibration: %f"
+msgstr "Valmis! Z kalibrointi: %f"
+
+#: Cura/gui/configWizard.py:1476
+msgid "Homing printer ..."
+msgstr "Ajetaan kotiasemaan ..."
+
+#: Cura/gui/configWizard.py:1490
+msgid "Please adjust with Up/Down until A4 just barely moves"
+msgstr "Säädä 'Ylös'/'Alas' kunnes A4-paperi juuri ja juuri liikkuu"
+
 #: Cura/gui/firmwareInstall.py:45
 msgid ""
 "I am sorry, but Cura does not ship with a default firmware for your machine "
@@ -409,7 +466,7 @@ msgstr ""
 "Olemme pahoillamme mutta Cura ei sisällä oletus firmwarea tulostimellesi."
 
 #: Cura/gui/firmwareInstall.py:45 Cura/gui/firmwareInstall.py:49
-#: Cura/gui/firmwareInstall.py:104 Cura/gui/mainWindow.py:489
+#: Cura/gui/firmwareInstall.py:104 Cura/gui/mainWindow.py:491
 msgid "Firmware update"
 msgstr "Firmwaren päivitys"
 
@@ -510,7 +567,7 @@ msgstr "Nollaa profiili oletukseksi"
 msgid "Preferences...\tCTRL+,"
 msgstr "Asetukset...\tCTRL+,"
 
-#: Cura/gui/mainWindow.py:87 Cura/gui/mainWindow.py:419
+#: Cura/gui/mainWindow.py:87 Cura/gui/mainWindow.py:421
 msgid "Machine settings..."
 msgstr "Tulostimen asetukset..."
 
@@ -576,41 +633,45 @@ msgstr "Aja ensimmäisen käynnistyksen avustaja..."
 
 #: Cura/gui/mainWindow.py:160
 msgid "Run bed leveling wizard..."
-msgstr "Aja alustan tasauksen avustaja..."
+msgstr "Avusta alustan tasauksessa..."
 
 #: Cura/gui/mainWindow.py:162
 msgid "Run head offset wizard..."
 msgstr "Aja tulostuspään offset-apuri..."
 
-#: Cura/gui/mainWindow.py:165
+#: Cura/gui/mainWindow.py:164
+msgid "Run head Z offset wizard..."
+msgstr "Avusta tulostuskorkeuden säädössä..."
+
+#: Cura/gui/mainWindow.py:167
 msgid "Expert"
 msgstr "Asiantuntija"
 
-#: Cura/gui/mainWindow.py:168
+#: Cura/gui/mainWindow.py:170
 msgid "Online documentation..."
 msgstr "On-line dokumentaatio"
 
-#: Cura/gui/mainWindow.py:170
+#: Cura/gui/mainWindow.py:172
 msgid "Report a problem..."
 msgstr "Raportoi ongelma..."
 
-#: Cura/gui/mainWindow.py:172
+#: Cura/gui/mainWindow.py:174
 msgid "Check for update..."
 msgstr "Tarkista onko päivityksiä saatavilla..."
 
-#: Cura/gui/mainWindow.py:174
+#: Cura/gui/mainWindow.py:176
 msgid "Open YouMagine website..."
 msgstr "Avaa YouMagine web-sivu..."
 
-#: Cura/gui/mainWindow.py:176
+#: Cura/gui/mainWindow.py:178
 msgid "About Cura..."
 msgstr "Tietoa Curasta..."
 
-#: Cura/gui/mainWindow.py:178
+#: Cura/gui/mainWindow.py:180
 msgid "Help"
 msgstr "Ohje"
 
-#: Cura/gui/mainWindow.py:328
+#: Cura/gui/mainWindow.py:330
 msgid ""
 "For \"One at a time\" printing, you need to have entered the correct head "
 "size and gantry height in the machine settings"
@@ -618,27 +679,27 @@ msgstr ""
 "Huomaa että \"Yksi kerrallaan\" tulostusta varten sinun täytyy asettaa "
 "tulostuspään tarkat mitat laiteasetuksissa"
 
-#: Cura/gui/mainWindow.py:328
+#: Cura/gui/mainWindow.py:330
 msgid "One at a time warning"
 msgstr "Yksi kerrallaan - varoitus"
 
-#: Cura/gui/mainWindow.py:425
+#: Cura/gui/mainWindow.py:427
 msgid "Install default firmware..."
 msgstr "Asenna oletusfirmware..."
 
-#: Cura/gui/mainWindow.py:428
+#: Cura/gui/mainWindow.py:430
 msgid "Install custom firmware..."
 msgstr "Asenna muokattu firmware..."
 
-#: Cura/gui/mainWindow.py:432
+#: Cura/gui/mainWindow.py:434
 msgid "Select profile file to load"
 msgstr "Valitse ladattava profiilitiedosto"
 
-#: Cura/gui/mainWindow.py:444
+#: Cura/gui/mainWindow.py:446
 msgid "Select gcode file to load profile from"
 msgstr "Valitse G-kooditiedosto josta haluat ladata profiilin"
 
-#: Cura/gui/mainWindow.py:457
+#: Cura/gui/mainWindow.py:459
 msgid ""
 "No profile found in GCode file.\n"
 "This feature only works with GCode files made by Cura 12.07 or newer."
@@ -647,15 +708,15 @@ msgstr ""
 "Tämä toiminto toimii vain niiden G-kooditiedostojen kanssa jotka on luotu\n"
 "Cura 12.07 tai uudemmilla versioilla."
 
-#: Cura/gui/mainWindow.py:457
+#: Cura/gui/mainWindow.py:459
 msgid "Profile load error"
 msgstr "Profiilin latausvirhe"
 
-#: Cura/gui/mainWindow.py:461
+#: Cura/gui/mainWindow.py:463
 msgid "Select profile file to save"
 msgstr "Valitse profiilitiedosto tallennusta varten"
 
-#: Cura/gui/mainWindow.py:469
+#: Cura/gui/mainWindow.py:471
 msgid ""
 "This will reset all profile settings to defaults.\n"
 "Unless you have saved your current profile, all settings will be lost!\n"
@@ -665,11 +726,11 @@ msgstr ""
 "Ellet ole tallentanut nykyistä profiiliasi, menetätä asetuksesi!\n"
 "Haluatko varmasti nollata asetukset?"
 
-#: Cura/gui/mainWindow.py:469
+#: Cura/gui/mainWindow.py:471
 msgid "Profile reset"
 msgstr "Profiilin nollaus"
 
-#: Cura/gui/mainWindow.py:489
+#: Cura/gui/mainWindow.py:491
 msgid ""
 "Warning: Installing a custom firmware does not guarantee that you machine "
 "will function correctly, and could damage your machine."
@@ -678,19 +739,19 @@ msgstr ""
 "ja ei voida antaa takuuta siitä että\n"
 "tulostin toimisi päivityksen jälkeen."
 
-#: Cura/gui/mainWindow.py:490
+#: Cura/gui/mainWindow.py:492
 msgid "Open firmware to upload"
 msgstr "Avaa ladattava firmware "
 
-#: Cura/gui/mainWindow.py:549
+#: Cura/gui/mainWindow.py:554
 msgid "You are running the latest version of Cura!"
 msgstr "Käytät viimeisintä Curan versiota!"
 
-#: Cura/gui/mainWindow.py:549
+#: Cura/gui/mainWindow.py:554
 msgid "Awesome!"
 msgstr "Mahtavaa!"
 
-#: Cura/gui/mainWindow.py:604
+#: Cura/gui/mainWindow.py:609
 msgid "Plugins"
 msgstr "Lisäosat"
 

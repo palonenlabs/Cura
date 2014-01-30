@@ -1297,7 +1297,7 @@ class headOffsetWizard(wx.wizard.Wizard):
 
 class headZOffsetWizard(wx.wizard.Wizard):
 	def __init__(self):
-		super(headZOffsetWizard, self).__init__(None, -1, "Head Z offset wizard")
+		super(headZOffsetWizard, self).__init__(None, -1, _("Head Z offset wizard"))
 
 		self.Bind(wx.wizard.EVT_WIZARD_PAGE_CHANGED, self.OnPageChanged)
 		self.Bind(wx.wizard.EVT_WIZARD_PAGE_CHANGING, self.OnPageChanging)
@@ -1323,24 +1323,24 @@ class headZOffsetWizard(wx.wizard.Wizard):
 
 class headZOffsetCalibrationPage(InfoPage):
 	def __init__(self, parent):
-		super(headZOffsetCalibrationPage, self).__init__(parent, "Printer head Z offset calibration")
+		super(headZOffsetCalibrationPage, self).__init__(parent, _("Printer head Z offset calibration"))
 
-		self.AddText('This wizard will help you in calibrating printer head Z offset.')
-		self.AddText('Please make sure printer bed is clear of objects and head is clear to move.')
+		self.AddText(_("This wizard will help you in calibrating printer head Z offset."))
+		self.AddText(_("Please make sure printer bed is clear of objects and head is clear to move."))
 		self.AddSeperator()
-		self.AddText('Please adjust height with "Up" and "Down" buttons until normal\nA4 paper just barely moves between extruder nozzle and bed.')
+		self.AddText(_("Please adjust height with 'Up' and 'Down' buttons until normal\nA4 paper just barely moves between extruder nozzle and bed."))
 
-		self.connectButton = self.AddButton('Connect to printer')
+		self.connectButton = self.AddButton(_("Connect to printer"))
 		self.comm = None
 
 		self.infoBox = self.AddInfoBox()
 
-		self.upButton = self.AddButton('Up')
+		self.upButton = self.AddButton(_("Up"))
 		self.upButton.Enable(False)
-		self.downButton = self.AddButton('Down')
+		self.downButton = self.AddButton(_("Down"))
 		self.downButton.Enable(False)
 		self.AddSeperator()
-		self.resumeButton = self.AddButton('OK, extruder touches paper now')
+		self.resumeButton = self.AddButton(_("OK, extruder touches paper now"))
 		self.resumeButton.Enable(False)
 		self.AddSeperator()
 
@@ -1378,7 +1378,7 @@ class headZOffsetCalibrationPage(InfoPage):
 			return
 		self.connectButton.Enable(False)
 		self.comm = machineCom.MachineCom(callbackObject=self)
-		self.infoBox.SetBusy('Connecting to machine.')
+		self.infoBox.SetBusy(_("Connecting to machine."))
 		self._wizardState = 0
 
 	def OnResume(self, e):
@@ -1394,18 +1394,19 @@ class headZOffsetCalibrationPage(InfoPage):
 				line = ""
 				while True:
 					line = self.lastreply
-					print line
+					#print line
 					if line.startswith('X'):
 						break
+					time.sleep(0.01)
 				
 				start = line.find('Z')
 				stop = line.find('E',start)
 				if start > -1 and stop > -1:
 					#print "DEBUG line: %s" % line
 					val = float(line[start + 2:stop])
-					print "DEBUG val: %s" % val
+					#print "DEBUG val: %s" % val
 					val = val * -1.0
-					print "new Z value = %f" % val
+					#print "new Z value = %f" % val
 
 					self.comm.sendCommand('M501')
 
@@ -1416,6 +1417,7 @@ class headZOffsetCalibrationPage(InfoPage):
 						# echo:  M206 X0.00 Y0.00 Z3.90
 						if line.find("M206") > -1:
 							break
+						time.sleep(0.01)
 					
 					start = line.find('Z')
 					oldval = 0
@@ -1429,7 +1431,7 @@ class headZOffsetCalibrationPage(InfoPage):
 					
 					newvalue = oldval + val
 					
-					wx.CallAfter(self.infoBox.SetAttention, 'Done! Z calibration: %f' % newvalue)
+					wx.CallAfter(self.infoBox.SetAttention, _("Done! Z calibration: %f") % newvalue)
 					
 					self.comm.sendCommand('M206 Z%f' % newvalue)
 					self.comm.sendCommand('M500')
@@ -1454,9 +1456,6 @@ class headZOffsetCalibrationPage(InfoPage):
 				#self.resumeButton.Enable(False)
 
 	def mcLog(self, message):
-		if message.startswith("Recv: ") or message.startswith("echo:"):
-			self.lastreply = message.replace("Recv: ","")
-			
 		print 'Log:', message
 
 	def mcTempUpdate(self, temp, bedTemp, targetTemp, bedTargetTemp):
@@ -1474,16 +1473,13 @@ class headZOffsetCalibrationPage(InfoPage):
 			return
 		if self.comm.isOperational():
 			if self._wizardState == 0:
-				wx.CallAfter(self.infoBox.SetBusy, 'Homing printer ...')
+				wx.CallAfter(self.infoBox.SetBusy, _("Homing printer ..."))
 				
 				w = profile.getMachineSettingFloat('machine_width')
 				d = profile.getMachineSettingFloat('machine_depth')
 
 				self.comm.sendCommand('G28')
 				self.comm.sendCommand('G90')
-				#self.comm.sendCommand('M206 Z0.00')
-				#self.comm.sendCommand('M500')
-				#time.sleep(1)
 				self.comm.sendCommand('G1 X%d Y%d Z-0.1 F%d' % (w/2, d/2, (profile.getProfileSettingFloat('print_speed')*20)))
 				self._wizardState = 1
 				self.resumeButton.Enable(True)
@@ -1491,7 +1487,7 @@ class headZOffsetCalibrationPage(InfoPage):
 			if not self.comm.isPrinting():
 				if self._wizardState == 1:
 					self._wizardState = 2
-					wx.CallAfter(self.infoBox.SetAttention, 'Please adjust with Up/Down until A4 just barely moves')
+					wx.CallAfter(self.infoBox.SetAttention, _("Please adjust with Up/Down until A4 just barely moves"))
 
 					wx.CallAfter(self.resumeButton.Enable, True)
 					wx.CallAfter(self.upButton.Enable, True)
@@ -1516,25 +1512,20 @@ class headZOffsetCalibrationPage(InfoPage):
 #				wx.CallAfter(self.resumeButton.SetFocus)
 
 		elif self.comm.isError():
-			wx.CallAfter(self.infoBox.SetError, 'Failed to establish connection with the printer.', 'http://wiki.ultimaker.com/Cura:_Connection_problems')
+			wx.CallAfter(self.infoBox.SetError, _("Failed to establish connection with the printer."), 'http://wiki.ultimaker.com/Cura:_Connection_problems')
 
 	def mcMessage(self, message):
-		pass
-
+		#print "DEBUG message: %s" % message
+		
+		if message.startswith("X") or message.find("M206") > -1:
+			self.lastreply = message
+			#print "GOT IT"
+			
 	def mcProgress(self, lineNr):
 		pass
 
 	def mcZChange(self, newZ):
 		pass
-	
-	def sendGCommand(self, cmd):
-		self.comm.sendCommand(cmd) #Disable cold extrusion protection
-		while True:
-			line = self.comm.readline()
-			if line == '':
-				return
-			if line.startswith('ok'):
-				break
 	
 	#def sendGCommand(self, cmd):
 #		self.comm.sendCommand(cmd)

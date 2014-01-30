@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-28 11:58+0200\n"
+"POT-Creation-Date: 2014-01-30 13:22+0200\n"
 "PO-Revision-Date: 2013-10-01 15:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: LANGUAGE &lt;LL@li.org&gt;\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.7\n"
 
-#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:546
+#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:551
 msgid "A new version of Cura is available, would you like to download?"
 msgstr "Er is een nieuwere versie van Cura beschikbaar, wil je die downloaden?"
 
-#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:546
+#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:551
 msgid "New version available"
 msgstr "Nieuwe versie beschikbaar"
 
@@ -273,7 +273,7 @@ msgstr "Eindschakelaars:"
 msgid "Show error log"
 msgstr "Laat de foutmelding log zien"
 
-#: Cura/gui/configWizard.py:510
+#: Cura/gui/configWizard.py:510 Cura/gui/configWizard.py:1381
 msgid "Connecting to machine."
 msgstr "Verbinding aan het maken met de machine"
 
@@ -303,7 +303,7 @@ msgstr "Temperatuur van printkop: %d"
 msgid "Communication State: %s"
 msgstr "Communicatie status: %s"
 
-#: Cura/gui/configWizard.py:583
+#: Cura/gui/configWizard.py:583 Cura/gui/configWizard.py:1515
 msgid "Failed to establish connection with the printer."
 msgstr "Het is niet gelukt een verbinding te maken met de printer."
 
@@ -401,6 +401,62 @@ msgstr ""
 "dit probleem zich blijft herhalen, haal dan de USB kabel uit de printer en "
 "sluit deze opnieuw aan."
 
+#: Cura/gui/configWizard.py:1300
+#, fuzzy
+msgid "Head Z offset wizard"
+msgstr "Wizard: Afstand printkoppen calibreren..."
+
+#: Cura/gui/configWizard.py:1326
+#, fuzzy
+msgid "Printer head Z offset calibration"
+msgstr "Afmetingen printkop"
+
+#: Cura/gui/configWizard.py:1328
+#, fuzzy
+msgid "This wizard will help you in calibrating printer head Z offset."
+msgstr "Deze wizard helpt je bij de volgende stappen:"
+
+#: Cura/gui/configWizard.py:1329
+msgid ""
+"Please make sure printer bed is clear of objects and head is clear to move."
+msgstr ""
+
+#: Cura/gui/configWizard.py:1331
+msgid ""
+"Please adjust height with 'Up' and 'Down' buttons until normal\n"
+"A4 paper just barely moves between extruder nozzle and bed."
+msgstr ""
+
+#: Cura/gui/configWizard.py:1333
+#, fuzzy
+msgid "Connect to printer"
+msgstr "Verbinding aan het maken met de machine"
+
+#: Cura/gui/configWizard.py:1338
+msgid "Up"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1340
+msgid "Down"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1343
+msgid "OK, extruder touches paper now"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1434
+#, python-format
+msgid "Done! Z calibration: %f"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1476
+msgid "Homing printer ..."
+msgstr ""
+
+#: Cura/gui/configWizard.py:1490
+msgid "Please adjust with Up/Down until A4 just barely moves"
+msgstr ""
+
 #: Cura/gui/firmwareInstall.py:45
 msgid ""
 "I am sorry, but Cura does not ship with a default firmware for your machine "
@@ -410,7 +466,7 @@ msgstr ""
 "machine."
 
 #: Cura/gui/firmwareInstall.py:45 Cura/gui/firmwareInstall.py:49
-#: Cura/gui/firmwareInstall.py:104 Cura/gui/mainWindow.py:489
+#: Cura/gui/firmwareInstall.py:104 Cura/gui/mainWindow.py:491
 msgid "Firmware update"
 msgstr "Firmware update"
 
@@ -507,7 +563,7 @@ msgstr "Reset Profiel Naar Standaardinstellingen"
 msgid "Preferences...\tCTRL+,"
 msgstr "Voorkeuren...\tCTRL+,"
 
-#: Cura/gui/mainWindow.py:87 Cura/gui/mainWindow.py:419
+#: Cura/gui/mainWindow.py:87 Cura/gui/mainWindow.py:421
 msgid "Machine settings..."
 msgstr "Machineinstellingen..."
 
@@ -582,62 +638,67 @@ msgstr "Wizard: Platform vlak afstellen..."
 msgid "Run head offset wizard..."
 msgstr "Wizard: Afstand printkoppen calibreren..."
 
-#: Cura/gui/mainWindow.py:165
+#: Cura/gui/mainWindow.py:164
+#, fuzzy
+msgid "Run head Z offset wizard..."
+msgstr "Wizard: Afstand printkoppen calibreren..."
+
+#: Cura/gui/mainWindow.py:167
 msgid "Expert"
 msgstr "Expert"
 
-#: Cura/gui/mainWindow.py:168
+#: Cura/gui/mainWindow.py:170
 msgid "Online documentation..."
 msgstr "Online documentatie..."
 
-#: Cura/gui/mainWindow.py:170
+#: Cura/gui/mainWindow.py:172
 msgid "Report a problem..."
 msgstr "Meld een probleem..."
 
-#: Cura/gui/mainWindow.py:172
+#: Cura/gui/mainWindow.py:174
 msgid "Check for update..."
 msgstr "Controleer op updates..."
 
-#: Cura/gui/mainWindow.py:174
+#: Cura/gui/mainWindow.py:176
 msgid "Open YouMagine website..."
 msgstr "Open de YouMagine website..."
 
-#: Cura/gui/mainWindow.py:176
+#: Cura/gui/mainWindow.py:178
 msgid "About Cura..."
 msgstr "Over Cura..."
 
-#: Cura/gui/mainWindow.py:178
+#: Cura/gui/mainWindow.py:180
 msgid "Help"
 msgstr "Help"
 
-#: Cura/gui/mainWindow.py:328
+#: Cura/gui/mainWindow.py:330
 msgid ""
 "For \"One at a time\" printing, you need to have entered the correct head "
 "size and gantry height in the machine settings"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:328
+#: Cura/gui/mainWindow.py:330
 msgid "One at a time warning"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:425
+#: Cura/gui/mainWindow.py:427
 #, fuzzy
 msgid "Install default firmware..."
 msgstr "Installeer de standaardfirmware..."
 
-#: Cura/gui/mainWindow.py:428
+#: Cura/gui/mainWindow.py:430
 msgid "Install custom firmware..."
 msgstr "Installeer je eigen firmware..."
 
-#: Cura/gui/mainWindow.py:432
+#: Cura/gui/mainWindow.py:434
 msgid "Select profile file to load"
 msgstr "Selecteer een profielbestand om te laden"
 
-#: Cura/gui/mainWindow.py:444
+#: Cura/gui/mainWindow.py:446
 msgid "Select gcode file to load profile from"
 msgstr "Selecteer een GCode bestand om het profiel uit te laden..."
 
-#: Cura/gui/mainWindow.py:457
+#: Cura/gui/mainWindow.py:459
 msgid ""
 "No profile found in GCode file.\n"
 "This feature only works with GCode files made by Cura 12.07 or newer."
@@ -646,15 +707,15 @@ msgstr ""
 "Deze feature werkt alleen wanneer GCode is gemaakt vanuit Cura nieuwer dan "
 "versie 12.07"
 
-#: Cura/gui/mainWindow.py:457
+#: Cura/gui/mainWindow.py:459
 msgid "Profile load error"
 msgstr "Fout bij het laden van het profiel"
 
-#: Cura/gui/mainWindow.py:461
+#: Cura/gui/mainWindow.py:463
 msgid "Select profile file to save"
 msgstr "Selecteer een profiel om op te slaan"
 
-#: Cura/gui/mainWindow.py:469
+#: Cura/gui/mainWindow.py:471
 msgid ""
 "This will reset all profile settings to defaults.\n"
 "Unless you have saved your current profile, all settings will be lost!\n"
@@ -665,11 +726,11 @@ msgstr ""
 "opgeslagen!\n"
 "Wil je echt herstellen?"
 
-#: Cura/gui/mainWindow.py:469
+#: Cura/gui/mainWindow.py:471
 msgid "Profile reset"
 msgstr "Profiel herstellen"
 
-#: Cura/gui/mainWindow.py:489
+#: Cura/gui/mainWindow.py:491
 msgid ""
 "Warning: Installing a custom firmware does not guarantee that you machine "
 "will function correctly, and could damage your machine."
@@ -677,19 +738,19 @@ msgstr ""
 "Let op: Wanneer je je eigen firmware installeert, zou je machine niet goed "
 "kunnen werken en zou je je printer kunnen beschadigen."
 
-#: Cura/gui/mainWindow.py:490
+#: Cura/gui/mainWindow.py:492
 msgid "Open firmware to upload"
 msgstr "Open firmware om te installeren"
 
-#: Cura/gui/mainWindow.py:549
+#: Cura/gui/mainWindow.py:554
 msgid "You are running the latest version of Cura!"
 msgstr "Je hebt de nieuwste versie van Cura!"
 
-#: Cura/gui/mainWindow.py:549
+#: Cura/gui/mainWindow.py:554
 msgid "Awesome!"
 msgstr "Te gek!"
 
-#: Cura/gui/mainWindow.py:604
+#: Cura/gui/mainWindow.py:609
 msgid "Plugins"
 msgstr "Plugins"
 

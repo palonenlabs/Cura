@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-28 11:58+0200\n"
+"POT-Creation-Date: 2014-01-30 13:22+0200\n"
 "PO-Revision-Date: 2013-09-27 09:41+0100\n"
 "Last-Translator: \n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.7\n"
 
-#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:546
+#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:551
 msgid "A new version of Cura is available, would you like to download?"
 msgstr ""
 
-#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:546
+#: Cura/gui/app.py:120 Cura/gui/mainWindow.py:551
 msgid "New version available"
 msgstr ""
 
@@ -240,7 +240,7 @@ msgstr ""
 msgid "Show error log"
 msgstr ""
 
-#: Cura/gui/configWizard.py:510
+#: Cura/gui/configWizard.py:510 Cura/gui/configWizard.py:1381
 msgid "Connecting to machine."
 msgstr ""
 
@@ -270,7 +270,7 @@ msgstr ""
 msgid "Communication State: %s"
 msgstr ""
 
-#: Cura/gui/configWizard.py:583
+#: Cura/gui/configWizard.py:583 Cura/gui/configWizard.py:1515
 msgid "Failed to establish connection with the printer."
 msgstr ""
 
@@ -358,6 +358,58 @@ msgid ""
 "If this keeps happening, try disconnecting and reconnecting the USB cable"
 msgstr ""
 
+#: Cura/gui/configWizard.py:1300
+msgid "Head Z offset wizard"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1326
+msgid "Printer head Z offset calibration"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1328
+msgid "This wizard will help you in calibrating printer head Z offset."
+msgstr ""
+
+#: Cura/gui/configWizard.py:1329
+msgid ""
+"Please make sure printer bed is clear of objects and head is clear to move."
+msgstr ""
+
+#: Cura/gui/configWizard.py:1331
+msgid ""
+"Please adjust height with 'Up' and 'Down' buttons until normal\n"
+"A4 paper just barely moves between extruder nozzle and bed."
+msgstr ""
+
+#: Cura/gui/configWizard.py:1333
+msgid "Connect to printer"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1338
+msgid "Up"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1340
+msgid "Down"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1343
+msgid "OK, extruder touches paper now"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1434
+#, python-format
+msgid "Done! Z calibration: %f"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1476
+msgid "Homing printer ..."
+msgstr ""
+
+#: Cura/gui/configWizard.py:1490
+msgid "Please adjust with Up/Down until A4 just barely moves"
+msgstr ""
+
 #: Cura/gui/firmwareInstall.py:45
 msgid ""
 "I am sorry, but Cura does not ship with a default firmware for your machine "
@@ -365,7 +417,7 @@ msgid ""
 msgstr ""
 
 #: Cura/gui/firmwareInstall.py:45 Cura/gui/firmwareInstall.py:49
-#: Cura/gui/firmwareInstall.py:104 Cura/gui/mainWindow.py:489
+#: Cura/gui/firmwareInstall.py:104 Cura/gui/mainWindow.py:491
 msgid "Firmware update"
 msgstr ""
 
@@ -458,7 +510,7 @@ msgstr ""
 msgid "Preferences...\tCTRL+,"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:87 Cura/gui/mainWindow.py:419
+#: Cura/gui/mainWindow.py:87 Cura/gui/mainWindow.py:421
 msgid "Machine settings..."
 msgstr ""
 
@@ -530,104 +582,108 @@ msgstr ""
 msgid "Run head offset wizard..."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:165
+#: Cura/gui/mainWindow.py:164
+msgid "Run head Z offset wizard..."
+msgstr ""
+
+#: Cura/gui/mainWindow.py:167
 msgid "Expert"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:168
+#: Cura/gui/mainWindow.py:170
 msgid "Online documentation..."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:170
+#: Cura/gui/mainWindow.py:172
 msgid "Report a problem..."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:172
+#: Cura/gui/mainWindow.py:174
 msgid "Check for update..."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:174
+#: Cura/gui/mainWindow.py:176
 msgid "Open YouMagine website..."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:176
+#: Cura/gui/mainWindow.py:178
 msgid "About Cura..."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:178
+#: Cura/gui/mainWindow.py:180
 msgid "Help"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:328
+#: Cura/gui/mainWindow.py:330
 msgid ""
 "For \"One at a time\" printing, you need to have entered the correct head "
 "size and gantry height in the machine settings"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:328
+#: Cura/gui/mainWindow.py:330
 msgid "One at a time warning"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:425
+#: Cura/gui/mainWindow.py:427
 msgid "Install default firmware..."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:428
+#: Cura/gui/mainWindow.py:430
 msgid "Install custom firmware..."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:432
+#: Cura/gui/mainWindow.py:434
 msgid "Select profile file to load"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:444
+#: Cura/gui/mainWindow.py:446
 msgid "Select gcode file to load profile from"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:457
+#: Cura/gui/mainWindow.py:459
 msgid ""
 "No profile found in GCode file.\n"
 "This feature only works with GCode files made by Cura 12.07 or newer."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:457
+#: Cura/gui/mainWindow.py:459
 msgid "Profile load error"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:461
+#: Cura/gui/mainWindow.py:463
 msgid "Select profile file to save"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:469
+#: Cura/gui/mainWindow.py:471
 msgid ""
 "This will reset all profile settings to defaults.\n"
 "Unless you have saved your current profile, all settings will be lost!\n"
 "Do you really want to reset?"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:469
+#: Cura/gui/mainWindow.py:471
 msgid "Profile reset"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:489
+#: Cura/gui/mainWindow.py:491
 msgid ""
 "Warning: Installing a custom firmware does not guarantee that you machine "
 "will function correctly, and could damage your machine."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:490
+#: Cura/gui/mainWindow.py:492
 msgid "Open firmware to upload"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:549
+#: Cura/gui/mainWindow.py:554
 msgid "You are running the latest version of Cura!"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:549
+#: Cura/gui/mainWindow.py:554
 msgid "Awesome!"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:604
+#: Cura/gui/mainWindow.py:609
 msgid "Plugins"
 msgstr ""
 
