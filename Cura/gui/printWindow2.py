@@ -3,19 +3,301 @@ __copyright__ = "Copyright (C) 2013 David Braam - Released under terms of the AG
 import wx
 import power
 import time
+import sys
+import os
+import ctypes
 
-from wx.lib import buttons
+#TODO: This does not belong here!
+if sys.platform.startswith('win'):
+	def preventComputerFromSleeping(prevent):
+		"""
+		Function used to prevent the computer from going into sleep mode.
+		:param prevent: True = Prevent the system from going to sleep from this point on.
+		:param prevent: False = No longer prevent the system from going to sleep.
+		"""
+		ES_CONTINUOUS = 0x80000000
+		ES_SYSTEM_REQUIRED = 0x00000001
+		#SetThreadExecutionState returns 0 when failed, which is ignored. The function should be supported from windows XP and up.
+		if prevent:
+			ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)
+		else:
+			ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS)
 
-from Cura.util import profile
-from Cura.util import resources
+else:
+	def preventComputerFromSleeping(prevent):
+		#No preventComputerFromSleeping for MacOS and Linux yet.
+		pass
 
-class printWindow(wx.Frame):
-	"Main user interface window"
-
-	def __init__(self, printerConnection):
-		super(printWindow, self).__init__(None, -1, title=_("Printing"))
+class printWindowPlugin(wx.Frame):
+	def __init__(self, parent, printerConnection, filename):
+		super(printWindowPlugin, self).__init__(parent, -1, style=wx.CLOSE_BOX|wx.CLIP_CHILDREN|wx.CAPTION|wx.SYSTEM_MENU|wx.FRAME_TOOL_WINDOW|wx.FRAME_FLOAT_ON_PARENT, title=_("Printing on %s") % (printerConnection.getName()))
 		self._printerConnection = printerConnection
-		self.lastUpdateTime = 0
+		self._basePath = os.path.dirname(filename)
+		self._backgroundImage = None
+		self._colorCommandMap = {}
+		self._buttonList = []
+		self._termLog = None
+		self._termInput = None
+		self._termHistory = []
+		self._termHistoryIdx = 0
+		self._progressBar = None
+		self._tempGraph = None
+		self._infoText = None
+		self._lastUpdateTime = time.time()
+
+		variables = {
+			'setImage': self.script_setImage,
+			'addColorCommand': self.script_addColorCommand,
+			'addTerminal': self.script_addTerminal,
+			'addTemperatureGraph': self.script_addTemperatureGraph,
+			'addProgressbar': self.script_addProgressbar,
+			'addButton': self.script_addButton,
+
+			'sendGCode': self.script_sendGCode,
+			'connect': self.script_connect,
+			'startPrint': self.script_startPrint,
+			'pausePrint': self.script_pausePrint,
+			'cancelPrint': self.script_cancelPrint,
+			'showErrorLog': self.script_showErrorLog,
+		}
+		execfile(filename, variables, variables)
+
+		self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
+		self.Bind(wx.EVT_PAINT, self.OnDraw)
+		self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftClick)
+		self.Bind(wx.EVT_CLOSE, self.OnClose)
+
+		self._updateButtonStates()
+
+		self._printerConnection.addCallback(self._doPrinterConnectionUpdate)
+
+		if self._printerConnection.hasActiveConnection() and not self._printerConnection.isActiveConnectionOpen():
+			self._printerConnection.openActiveConnection()
+		preventComputerFromSleeping(True)
+
+	def script_setImage(self, guiImage, mapImage):
+		self._backgroundImage = wx.BitmapFromImage(wx.Image(os.path.join(self._basePath, guiImage)))
+		self._mapImage = wx.Image(os.path.join(self._basePath, mapImage))
+		self.SetClientSize(self._mapImage.GetSize())
+
+	def script_addColorCommand(self, r, g, b, command, data = None):
+		self._colorCommandMap[(r, g, b)] = (command, data)
+
+	def script_addTerminal(self, r, g, b):
+		x, y, w, h = self._getColoredRect(r, g, b)
+		if x < 0 or self._termLog is not None:
+			return
+		f = wx.Font(8, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False)
+		self._termLog = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_DONTWRAP)
+		self._termLog.SetFont(f)
+		self._termLog.SetEditable(0)
+		self._termInput = wx.TextCtrl(self, style=wx.TE_PROCESS_ENTER)
+		self._termInput.SetFont(f)
+
+		self._termLog.SetPosition((x, y))
+		self._termLog.SetSize((w, h - self._termInput.GetSize().GetHeight()))
+		self._termInput.SetPosition((x, y + h - self._termInput.GetSize().GetHeight()))
+		self._termInput.SetSize((w, self._termInput.GetSize().GetHeight()))
+		self.Bind(wx.EVT_TEXT_ENTER, self.OnTermEnterLine, self._termInput)
+		self._termInput.Bind(wx.EVT_CHAR, self.OnTermKey)
+
+	def script_addTemperatureGraph(self, r, g, b):
+		x, y, w, h = self._getColoredRect(r, g, b)
+		if x < 0 or self._tempGraph is not None:
+			return
+		self._tempGraph = TemperatureGraph(self)
+
+		self._tempGraph.SetPosition((x, y))
+		self._tempGraph.SetSize((w, h))
+
+	def script_addProgressbar(self, r, g, b):
+		x, y, w, h = self._getColoredRect(r, g, b)
+		if x < 0:
+			return
+		self._progressBar = wx.Gauge(self, -1, range=1000)
+
+		self._progressBar.SetPosition((x, y))
+		self._progressBar.SetSize((w, h))
+
+	def script_addButton(self, r, g, b, text, command, data = None):
+		x, y, w, h = self._getColoredRect(r, g, b)
+		if x < 0:
+			return
+		button = wx.Button(self, -1, _(text))
+		button.SetPosition((x, y))
+		button.SetSize((w, h))
+		button.command = command
+		button.data = data
+		self._buttonList.append(button)
+		self.Bind(wx.EVT_BUTTON, lambda e: command(data), button)
+
+	def _getColoredRect(self, r, g, b):
+		for x in xrange(0, self._mapImage.GetWidth()):
+			for y in xrange(0, self._mapImage.GetHeight()):
+				if self._mapImage.GetRed(x, y) == r and self._mapImage.GetGreen(x, y) == g and self._mapImage.GetBlue(x, y) == b:
+					w = 0
+					while x+w < self._mapImage.GetWidth() and self._mapImage.GetRed(x + w, y) == r and self._mapImage.GetGreen(x + w, y) == g and self._mapImage.GetBlue(x + w, y) == b:
+						w += 1
+					h = 0
+					while y+h < self._mapImage.GetHeight() and self._mapImage.GetRed(x, y + h) == r and self._mapImage.GetGreen(x, y + h) == g and self._mapImage.GetBlue(x, y + h) == b:
+						h += 1
+					return x, y, w, h
+		print "Failed to find color: ", r, g, b
+		return -1, -1, 1, 1
+
+	def script_sendGCode(self, data = None):
+		for line in data.split(';'):
+			line = line.strip()
+			if len(line) > 0:
+				self._printerConnection.sendCommand(line)
+
+	def script_connect(self, data = None):
+		self._printerConnection.openActiveConnection()
+
+	def script_startPrint(self, data = None):
+		self._printerConnection.startPrint()
+
+	def script_cancelPrint(self, e):
+		self._printerConnection.cancelPrint()
+
+	def script_pausePrint(self, e):
+		self._printerConnection.pause(not self._printerConnection.isPaused())
+
+	def script_showErrorLog(self, e):
+		LogWindow(self._printerConnection.getErrorLog())
+
+	def OnEraseBackground(self, e):
+		pass
+
+	def OnDraw(self, e):
+		dc = wx.BufferedPaintDC(self, self._backgroundImage)
+
+	def OnLeftClick(self, e):
+		r = self._mapImage.GetRed(e.GetX(), e.GetY())
+		g = self._mapImage.GetGreen(e.GetX(), e.GetY())
+		b = self._mapImage.GetBlue(e.GetX(), e.GetY())
+		if (r, g, b) in self._colorCommandMap:
+			command = self._colorCommandMap[(r, g, b)]
+			command[0](command[1])
+
+	def OnClose(self, e):
+		if self._printerConnection.hasActiveConnection():
+			if self._printerConnection.isPrinting():
+				pass #TODO: Give warning that the close will kill the print.
+			self._printerConnection.closeActiveConnection()
+		self._printerConnection.removeCallback(self._doPrinterConnectionUpdate)
+		#TODO: When multiple printer windows are open, closing one will enable sleeping again.
+		preventComputerFromSleeping(False)
+		self.Destroy()
+
+	def OnTermEnterLine(self, e):
+		if not self._printerConnection.isAbleToSendDirectCommand():
+			return
+		line = self._termInput.GetValue()
+		if line == '':
+			return
+		self._addTermLog('> %s\n' % (line))
+		self._printerConnection.sendCommand(line)
+		self._termHistory.append(line)
+		self._termHistoryIdx = len(self._termHistory)
+		self._termInput.SetValue('')
+
+	def OnTermKey(self, e):
+		if len(self._termHistory) > 0:
+			if e.GetKeyCode() == wx.WXK_UP:
+				self._termHistoryIdx -= 1
+				if self._termHistoryIdx < 0:
+					self._termHistoryIdx = len(self._termHistory) - 1
+				self._termInput.SetValue(self._termHistory[self._termHistoryIdx])
+			if e.GetKeyCode() == wx.WXK_DOWN:
+				self._termHistoryIdx -= 1
+				if self._termHistoryIdx >= len(self._termHistory):
+					self._termHistoryIdx = 0
+				self._termInput.SetValue(self._termHistory[self._termHistoryIdx])
+		e.Skip()
+
+	def _addTermLog(self, line):
+		if self._termLog is not None:
+			if len(self._termLog.GetValue()) > 10000:
+				self._termLog.SetValue(self._termLog.GetValue()[-10000:])
+			self._termLog.SetInsertionPointEnd()
+			if type(line) != unicode:
+				line = unicode(line, 'utf-8', 'replace')
+			self._termLog.AppendText(line.encode('utf-8', 'replace'))
+
+	def _updateButtonStates(self):
+		for button in self._buttonList:
+			if button.command == self.script_connect:
+				button.Show(self._printerConnection.hasActiveConnection())
+				button.Enable(not self._printerConnection.isActiveConnectionOpen() and not self._printerConnection.isActiveConnectionOpening())
+			elif button.command == self.script_pausePrint:
+				button.Show(self._printerConnection.hasPause())
+				if not self._printerConnection.hasActiveConnection() or self._printerConnection.isActiveConnectionOpen():
+					button.Enable(self._printerConnection.isPrinting() or self._printerConnection.isPaused())
+				else:
+					button.Enable(False)
+			elif button.command == self.script_startPrint:
+				if not self._printerConnection.hasActiveConnection() or self._printerConnection.isActiveConnectionOpen():
+					button.Enable(not self._printerConnection.isPrinting())
+				else:
+					button.Enable(False)
+			elif button.command == self.script_cancelPrint:
+				if not self._printerConnection.hasActiveConnection() or self._printerConnection.isActiveConnectionOpen():
+					button.Enable(self._printerConnection.isPrinting())
+				else:
+					button.Enable(False)
+			elif button.command == self.script_showErrorLog:
+				button.Show(self._printerConnection.isInErrorState())
+		if self._termInput is not None:
+			self._termInput.Enable(self._printerConnection.isAbleToSendDirectCommand())
+
+	def _doPrinterConnectionUpdate(self, connection, extraInfo = None):
+		wx.CallAfter(self.__doPrinterConnectionUpdate, connection, extraInfo)
+		if self._tempGraph is not None:
+			temp = []
+			for n in xrange(0, 4):
+				t = connection.getTemperature(0)
+				if t is not None:
+					temp.append(t)
+				else:
+					break
+			self._tempGraph.addPoint(temp, [0] * len(temp), connection.getBedTemperature(), 0)
+
+	def __doPrinterConnectionUpdate(self, connection, extraInfo):
+		t = time.time()
+		if self._lastUpdateTime + 0.5 > t and extraInfo is None:
+			return
+		self._lastUpdateTime = t
+
+		if extraInfo is not None:
+			self._addTermLog('< %s\n' % (extraInfo))
+
+		self._updateButtonStates()
+		if self._progressBar is not None:
+			if connection.isPrinting():
+				self._progressBar.SetValue(connection.getPrintProgress() * 1000)
+			else:
+				self._progressBar.SetValue(0)
+		info = connection.getStatusString()
+		info += '\n'
+		if self._printerConnection.getTemperature(0) is not None:
+			info += 'Temperature: %d' % (self._printerConnection.getTemperature(0))
+		if self._printerConnection.getBedTemperature() > 0:
+			info += ' Bed: %d' % (self._printerConnection.getBedTemperature())
+		if self._infoText is not None:
+			self._infoText.SetLabel(info)
+		else:
+			self.SetTitle(info.replace('\n', ', '))
+
+class printWindowBasic(wx.Frame):
+	"""
+	Printing window for USB printing, network printing, and any other type of printer connection we can think off.
+	This is only a basic window with minimal information.
+	"""
+	def __init__(self, parent, printerConnection):
+		super(printWindowBasic, self).__init__(parent, -1, style=wx.CLOSE_BOX|wx.CLIP_CHILDREN|wx.CAPTION|wx.SYSTEM_MENU|wx.FRAME_TOOL_WINDOW|wx.FRAME_FLOAT_ON_PARENT, title=_("Printing on %s") % (printerConnection.getName()))
+		self._printerConnection = printerConnection
+		self._lastUpdateTime = 0
 
 		self.SetSizer(wx.BoxSizer())
 		self.panel = wx.Panel(self)
@@ -23,26 +305,21 @@ class printWindow(wx.Frame):
 		self.sizer = wx.GridBagSizer(2, 2)
 		self.panel.SetSizer(self.sizer)
 
-		sb = wx.StaticBox(self.panel, label=_("Statistics"))
-		boxsizer = wx.StaticBoxSizer(sb, wx.VERTICAL)
-
 		self.powerWarningText = wx.StaticText(parent=self.panel,
 			id=-1,
 			label=_("Your computer is running on battery power.\nConnect your computer to AC power or your print might not finish."),
 			style=wx.ALIGN_CENTER)
 		self.powerWarningText.SetBackgroundColour('red')
 		self.powerWarningText.SetForegroundColour('white')
-		boxsizer.AddF(self.powerWarningText, flags=wx.SizerFlags().Expand().Border(wx.BOTTOM, 10))
+		self.sizer.Add(self.powerWarningText, pos=(0, 0), span=(1, 5), flag=wx.EXPAND|wx.BOTTOM, border=5)
 		self.powerManagement = power.PowerManagement()
 		self.powerWarningTimer = wx.Timer(self)
 		self.Bind(wx.EVT_TIMER, self.OnPowerWarningChange, self.powerWarningTimer)
 		self.OnPowerWarningChange(None)
 		self.powerWarningTimer.Start(10000)
 
-		self.statsText = wx.StaticText(self.panel, -1, _("Filament: ####.##m #.##g\nEstimated print time: #####:##\nMachine state:\nDetecting baudrateXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-		boxsizer.Add(self.statsText, flag=wx.LEFT, border=5)
-
-		self.sizer.Add(boxsizer, pos=(0, 0), span=(7, 1), flag=wx.EXPAND)
+		self.statsText = wx.StaticText(self.panel, -1, _("InfoLine from printer connection\nInfoLine from dialog"))
+		self.sizer.Add(self.statsText, pos=(1, 0), span=(1, 5), flag=wx.LEFT, border=5)
 
 		self.connectButton = wx.Button(self.panel, -1, _("Connect"))
 		#self.loadButton = wx.Button(self.panel, -1, 'Load')
@@ -52,103 +329,13 @@ class printWindow(wx.Frame):
 		self.errorLogButton = wx.Button(self.panel, -1, _("Error log"))
 		self.progress = wx.Gauge(self.panel, -1, range=1000)
 
-		self.sizer.Add(self.connectButton, pos=(1, 1), flag=wx.EXPAND)
-		#self.sizer.Add(self.loadButton, pos=(1,1), flag=wx.EXPAND)
-		self.sizer.Add(self.printButton, pos=(2, 1), flag=wx.EXPAND)
-		self.sizer.Add(self.pauseButton, pos=(3, 1), flag=wx.EXPAND)
-		self.sizer.Add(self.cancelButton, pos=(4, 1), flag=wx.EXPAND)
-		self.sizer.Add(self.errorLogButton, pos=(5, 1), flag=wx.EXPAND)
-		self.sizer.Add(self.progress, pos=(7, 0), span=(1, 7), flag=wx.EXPAND)
-
-		nb = wx.Notebook(self.panel)
-		self.tabs = nb
-		self.sizer.Add(nb, pos=(0, 2), span=(7, 4), flag=wx.EXPAND)
-
-		self.temperaturePanel = wx.Panel(nb)
-		sizer = wx.GridBagSizer(2, 2)
-		self.temperaturePanel.SetSizer(sizer)
-
-		self.temperatureSelect = wx.SpinCtrl(self.temperaturePanel, -1, '0', size=(21 * 3, 21), style=wx.SP_ARROW_KEYS)
-		self.temperatureSelect.SetRange(0, 400)
-		self.temperatureHeatUp = wx.Button(self.temperaturePanel, -1, str(int(profile.getProfileSettingFloat('print_temperature'))) + 'C')
-		self.bedTemperatureLabel = wx.StaticText(self.temperaturePanel, -1, _("BedTemp:"))
-		self.bedTemperatureSelect = wx.SpinCtrl(self.temperaturePanel, -1, '0', size=(21 * 3, 21), style=wx.SP_ARROW_KEYS)
-		self.bedTemperatureSelect.SetRange(0, 400)
-		self.bedTemperatureLabel.Show(False)
-		self.bedTemperatureSelect.Show(False)
-
-		self.temperatureGraph = TemperatureGraph(self.temperaturePanel)
-
-		sizer.Add(wx.StaticText(self.temperaturePanel, -1, _("Temp:")), pos=(0, 0))
-		sizer.Add(self.temperatureSelect, pos=(0, 1))
-		sizer.Add(self.temperatureHeatUp, pos=(0, 2))
-		sizer.Add(self.bedTemperatureLabel, pos=(1, 0))
-		sizer.Add(self.bedTemperatureSelect, pos=(1, 1))
-		sizer.Add(self.temperatureGraph, pos=(2, 0), span=(1, 3), flag=wx.EXPAND)
-		sizer.AddGrowableRow(2)
-		sizer.AddGrowableCol(2)
-
-		nb.AddPage(self.temperaturePanel, 'Temp')
-
-		self.directControlPanel = wx.Panel(nb)
-
-		sizer = wx.GridBagSizer(2, 2)
-		self.directControlPanel.SetSizer(sizer)
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Y100 F6000', 'G90'], 'print-move-y100.png'), pos=(0, 3))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Y10 F6000', 'G90'], 'print-move-y10.png'), pos=(1, 3))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Y1 F6000', 'G90'], 'print-move-y1.png'), pos=(2, 3))
-
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Y-1 F6000', 'G90'], 'print-move-y-1.png'), pos=(4, 3))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Y-10 F6000', 'G90'], 'print-move-y-10.png'), pos=(5, 3))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Y-100 F6000', 'G90'], 'print-move-y-100.png'), pos=(6, 3))
-
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 X-100 F6000', 'G90'], 'print-move-x-100.png'), pos=(3, 0))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 X-10 F6000', 'G90'], 'print-move-x-10.png'), pos=(3, 1))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 X-1 F6000', 'G90'], 'print-move-x-1.png'), pos=(3, 2))
-
-		sizer.Add(PrintCommandButton(self, ['G28 X0 Y0'], 'print-move-home.png'), pos=(3, 3))
-
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 X1 F6000', 'G90'], 'print-move-x1.png'), pos=(3, 4))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 X10 F6000', 'G90'], 'print-move-x10.png'), pos=(3, 5))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 X100 F6000', 'G90'], 'print-move-x100.png'), pos=(3, 6))
-
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Z10 F200', 'G90'], 'print-move-z10.png'), pos=(0, 8))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Z1 F200', 'G90'], 'print-move-z1.png'), pos=(1, 8))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Z0.1 F200', 'G90'], 'print-move-z0.1.png'), pos=(2, 8))
-
-		sizer.Add(PrintCommandButton(self, ['G28 Z0'], 'print-move-home.png'), pos=(3, 8))
-
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Z-0.1 F200', 'G90'], 'print-move-z-0.1.png'), pos=(4, 8))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Z-1 F200', 'G90'], 'print-move-z-1.png'), pos=(5, 8))
-		sizer.Add(PrintCommandButton(self, ['G91', 'G1 Z-10 F200', 'G90'], 'print-move-z-10.png'), pos=(6, 8))
-
-		sizer.Add(PrintCommandButton(self, ['G92 E0', 'G1 E2 F120'], 'extrude.png', size=(60, 20)), pos=(1, 10), span=(1, 3), flag=wx.EXPAND)
-		sizer.Add(PrintCommandButton(self, ['G92 E0', 'G1 E-2 F120'], 'retract.png', size=(60, 20)), pos=(2, 10), span=(1, 3), flag=wx.EXPAND)
-
-		nb.AddPage(self.directControlPanel, _("Jog"))
-
-		self.termPanel = wx.Panel(nb)
-		sizer = wx.GridBagSizer(2, 2)
-		self.termPanel.SetSizer(sizer)
-
-		f = wx.Font(8, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False)
-		self.termLog = wx.TextCtrl(self.termPanel, style=wx.TE_MULTILINE | wx.TE_DONTWRAP)
-		self.termLog.SetFont(f)
-		self.termLog.SetEditable(0)
-		self.termInput = wx.TextCtrl(self.termPanel, style=wx.TE_PROCESS_ENTER)
-		self.termInput.SetFont(f)
-		self._termHistory = []
-		self._termHistoryIdx = 0
-
-		sizer.Add(self.termLog, pos=(0, 0), flag=wx.EXPAND)
-		sizer.Add(self.termInput, pos=(1, 0), flag=wx.EXPAND)
-		sizer.AddGrowableCol(0)
-		sizer.AddGrowableRow(0)
-
-		nb.AddPage(self.termPanel, _("Term"))
-
-		self.sizer.AddGrowableRow(6)
-		self.sizer.AddGrowableCol(3)
+		self.sizer.Add(self.connectButton, pos=(2, 0))
+		#self.sizer.Add(self.loadButton, pos=(2,1))
+		self.sizer.Add(self.printButton, pos=(2, 1))
+		self.sizer.Add(self.pauseButton, pos=(2, 2))
+		self.sizer.Add(self.cancelButton, pos=(2, 3))
+		self.sizer.Add(self.errorLogButton, pos=(2, 4))
+		self.sizer.Add(self.progress, pos=(3, 0), span=(1, 5), flag=wx.EXPAND)
 
 		self.Bind(wx.EVT_CLOSE, self.OnClose)
 		self.connectButton.Bind(wx.EVT_BUTTON, self.OnConnect)
@@ -158,23 +345,19 @@ class printWindow(wx.Frame):
 		self.cancelButton.Bind(wx.EVT_BUTTON, self.OnCancel)
 		self.errorLogButton.Bind(wx.EVT_BUTTON, self.OnErrorLog)
 
-		self.Bind(wx.EVT_BUTTON, lambda e: (self.temperatureSelect.SetValue(int(profile.getProfileSettingFloat('print_temperature'))), self.machineCom.sendCommand("M104 S%d" % (int(profile.getProfileSettingFloat('print_temperature'))))), self.temperatureHeatUp)
-		self.Bind(wx.EVT_SPINCTRL, self.OnTempChange, self.temperatureSelect)
-		self.Bind(wx.EVT_SPINCTRL, self.OnBedTempChange, self.bedTemperatureSelect)
-
-		self.Bind(wx.EVT_TEXT_ENTER, self.OnTermEnterLine, self.termInput)
-		self.termInput.Bind(wx.EVT_CHAR, self.OnTermKey)
-
 		self.Layout()
 		self.Fit()
 		self.Centre()
 
-		self.statsText.SetMinSize(self.statsText.GetSize())
-		self.statsText.SetLabel(self._printerConnection.getStatusString())
-
-		self.UpdateButtonStates()
+		self.progress.SetMinSize(self.progress.GetSize())
+		self.statsText.SetLabel('')
+		self._updateButtonStates()
 
 		self._printerConnection.addCallback(self._doPrinterConnectionUpdate)
+
+		if self._printerConnection.hasActiveConnection() and not self._printerConnection.isActiveConnectionOpen():
+			self._printerConnection.openActiveConnection()
+		preventComputerFromSleeping(True)
 
 	def OnPowerWarningChange(self, e):
 		type = self.powerManagement.get_providing_power_source_type()
@@ -182,14 +365,23 @@ class printWindow(wx.Frame):
 			self.powerWarningText.Hide()
 			self.panel.Layout()
 			self.Layout()
+			self.Fit()
+			self.Refresh()
 		elif type != power.POWER_TYPE_AC and not self.powerWarningText.IsShown():
 			self.powerWarningText.Show()
 			self.panel.Layout()
 			self.Layout()
+			self.Fit()
+			self.Refresh()
 
 	def OnClose(self, e):
-		self._printerConnection.closeActiveConnection()
+		if self._printerConnection.hasActiveConnection():
+			if self._printerConnection.isPrinting():
+				pass #TODO: Give warning that the close will kill the print.
+			self._printerConnection.closeActiveConnection()
 		self._printerConnection.removeCallback(self._doPrinterConnectionUpdate)
+		#TODO: When multiple printer windows are open, closing one will enable sleeping again.
+		preventComputerFromSleeping(False)
 		self.Destroy()
 
 	def OnConnect(self, e):
@@ -210,69 +402,36 @@ class printWindow(wx.Frame):
 	def OnErrorLog(self, e):
 		LogWindow(self._printerConnection.getErrorLog())
 
-	def OnTempChange(self, e):
-		if not self._printerConnection.isAbleToSendDirectCommand():
-			return
-		self._printerConnection.sendCommand("M104 S%d" % (self.temperatureSelect.GetValue()))
-
-	def OnBedTempChange(self, e):
-		if not self._printerConnection.isAbleToSendDirectCommand():
-			return
-		self._printerConnection.sendCommand("M140 S%d" % (self.bedTemperatureSelect.GetValue()))
-
-	def OnTermEnterLine(self, e):
-		if not self._printerConnection.isAbleToSendDirectCommand():
-			return
-		line = self.termInput.GetValue()
-		if line == '':
-			return
-		self._addTermLog('>%s\n' % (line))
-		self._printerConnection.sendCommand(line)
-		self._termHistory.append(line)
-		self._termHistoryIdx = len(self._termHistory)
-		self.termInput.SetValue('')
-
-	def OnTermKey(self, e):
-		if len(self._termHistory) > 0:
-			if e.GetKeyCode() == wx.WXK_UP:
-				self._termHistoryIdx -= 1
-				if self._termHistoryIdx < 0:
-					self._termHistoryIdx = len(self._termHistory) - 1
-				self.termInput.SetValue(self._termHistory[self._termHistoryIdx])
-			if e.GetKeyCode() == wx.WXK_DOWN:
-				self._termHistoryIdx -= 1
-				if self._termHistoryIdx >= len(self._termHistory):
-					self._termHistoryIdx = 0
-				self.termInput.SetValue(self._termHistory[self._termHistoryIdx])
-		e.Skip()
-
-	def _addTermLog(self, line):
-		if len(self.termLog.GetValue()) > 10000:
-			self.termLog.SetValue(self.termLog.GetValue()[-10000:])
-		self.termLog.SetInsertionPointEnd()
-		self.termLog.AppendText(line.encode('utf-8', 'replace'))
-
 	def _doPrinterConnectionUpdate(self, connection, extraInfo = None):
 		wx.CallAfter(self.__doPrinterConnectionUpdate, connection, extraInfo)
-		temp = [connection.getTemperature(0)]
-		self.temperatureGraph.addPoint(temp, [0], connection.getBedTemperature(), 0)
+		#temp = [connection.getTemperature(0)]
+		#self.temperatureGraph.addPoint(temp, [0], connection.getBedTemperature(), 0)
 
 	def __doPrinterConnectionUpdate(self, connection, extraInfo):
 		t = time.time()
-		if self.lastUpdateTime + 0.5 > t:
+		if self._lastUpdateTime + 0.5 > t and extraInfo is None:
 			return
-		self.lastUpdateTime = t
+		self._lastUpdateTime = t
 
-		self.UpdateButtonStates()
+		if extraInfo is not None:
+			self._addTermLog('< %s\n' % (extraInfo))
+
+		self._updateButtonStates()
 		if connection.isPrinting():
 			self.progress.SetValue(connection.getPrintProgress() * 1000)
 		else:
 			self.progress.SetValue(0)
-		self.statsText.SetLabel(connection.getStatusString())
+		info = connection.getStatusString()
+		info += '\n'
+		if self._printerConnection.getTemperature(0) is not None:
+			info += 'Temperature: %d' % (self._printerConnection.getTemperature(0))
+		if self._printerConnection.getBedTemperature() > 0:
+			info += ' Bed: %d' % (self._printerConnection.getBedTemperature())
+		self.statsText.SetLabel(info)
 
-	def UpdateButtonStates(self):
+	def _updateButtonStates(self):
 		self.connectButton.Show(self._printerConnection.hasActiveConnection())
-		self.connectButton.Enable(not self._printerConnection.isActiveConnectionOpen())
+		self.connectButton.Enable(not self._printerConnection.isActiveConnectionOpen() and not self._printerConnection.isActiveConnectionOpening())
 		self.pauseButton.Show(self._printerConnection.hasPause())
 		if not self._printerConnection.hasActiveConnection() or self._printerConnection.isActiveConnectionOpen():
 			self.printButton.Enable(not self._printerConnection.isPrinting())
@@ -283,31 +442,6 @@ class printWindow(wx.Frame):
 			self.pauseButton.Enable(False)
 			self.cancelButton.Enable(False)
 		self.errorLogButton.Show(self._printerConnection.isInErrorState())
-
-		self.directControlPanel.Enable(self._printerConnection.isAbleToSendDirectCommand())
-		self.temperatureSelect.Enable(self._printerConnection.isAbleToSendDirectCommand())
-		self.temperatureHeatUp.Enable(self._printerConnection.isAbleToSendDirectCommand())
-		self.termInput.Enable(self._printerConnection.isAbleToSendDirectCommand())
-
-class PrintCommandButton(buttons.GenBitmapButton):
-	def __init__(self, parent, commandList, bitmapFilename, size=(20, 20)):
-		self.bitmap = wx.Bitmap(resources.getPathForImage(bitmapFilename))
-		super(PrintCommandButton, self).__init__(parent.directControlPanel, -1, self.bitmap, size=size)
-
-		self.commandList = commandList
-		self.parent = parent
-
-		self.SetBezelWidth(1)
-		self.SetUseFocusIndicator(False)
-
-		self.Bind(wx.EVT_BUTTON, self.OnClick)
-
-	def OnClick(self, e):
-		if self.parent._printerConnection is None or self.parent._printerConnection.isAbleToSendDirectCommand():
-			return
-		for cmd in self.commandList:
-			self.parent._printerConnection.sendCommand(cmd)
-		e.Skip()
 
 class TemperatureGraph(wx.Panel):
 	def __init__(self, parent):
@@ -321,7 +455,6 @@ class TemperatureGraph(wx.Panel):
 		self._points = []
 		self._backBuffer = None
 		self.addPoint([0]*16, [0]*16, 0, 0)
-		self.SetMinSize((320, 200))
 
 	def OnEraseBackground(self, e):
 		pass
@@ -354,14 +487,14 @@ class TemperatureGraph(wx.Panel):
 
 		#Draw the background up to the current temperatures.
 		x0 = 0
-		t0 = [0] * len(self._points[0][0])
+		t0 = []
 		bt0 = 0
 		tSP0 = 0
 		btSP0 = 0
 		for temp, tempSP, bedTemp, bedTempSP, t in self._points:
 			x1 = int(w - (now - t))
 			for x in xrange(x0, x1 + 1):
-				for n in xrange(0, len(temp)):
+				for n in xrange(0, min(len(t0), len(temp))):
 					t = float(x - x0) / float(x1 - x0 + 1) * (temp[n] - t0[n]) + t0[n]
 					dc.SetPen(tempPenBG)
 					dc.DrawLine(x, h, x, h - (t * h / 300))
@@ -389,14 +522,14 @@ class TemperatureGraph(wx.Panel):
 
 		#Draw the main lines
 		x0 = 0
-		t0 = [0] * len(self._points[0][0])
+		t0 = []
 		bt0 = 0
-		tSP0 = [0] * len(self._points[0][0])
+		tSP0 = []
 		btSP0 = 0
 		for temp, tempSP, bedTemp, bedTempSP, t in self._points:
 			x1 = int(w - (now - t))
 			for x in xrange(x0, x1 + 1):
-				for n in xrange(0, len(temp)):
+				for n in xrange(0, min(len(t0), len(temp))):
 					t = float(x - x0) / float(x1 - x0 + 1) * (temp[n] - t0[n]) + t0[n]
 					tSP = float(x - x0) / float(x1 - x0 + 1) * (tempSP[n] - tSP0[n]) + tSP0[n]
 					dc.SetPen(tempSPPen)

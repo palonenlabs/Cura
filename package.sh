@@ -18,7 +18,7 @@ BUILD_TARGET=${1:-all}
 ##Do we need to create the final archive
 ARCHIVE_FOR_DISTRIBUTION=1
 ##Which version name are we appending to the final archive
-export BUILD_NAME=14.01
+export BUILD_NAME=14.02-TEST1
 TARGET_DIR=Cura-${BUILD_NAME}-${BUILD_TARGET}
 
 ##Which versions of external programs to use
@@ -144,7 +144,7 @@ fi
 #############################
 
 if [ "$BUILD_TARGET" = "debian_i386" ]; then
-        export CXX="g++ -m32"
+    export CXX="g++ -m32"
 	if [ ! -d "Power" ]; then
 		git clone https://github.com/GreatFruitOmsk/Power
 	else
@@ -158,6 +158,8 @@ if [ "$BUILD_TARGET" = "debian_i386" ]; then
 	rm -rf scripts/linux/${BUILD_TARGET}/usr/share/cura
 	mkdir -p scripts/linux/${BUILD_TARGET}/usr/share/cura
 	cp -a Cura scripts/linux/${BUILD_TARGET}/usr/share/cura/
+	cp -a resources scripts/linux/${BUILD_TARGET}/usr/share/cura/
+	cp -a plugins scripts/linux/${BUILD_TARGET}/usr/share/cura/
 	cp -a CuraEngine/CuraEngine scripts/linux/${BUILD_TARGET}/usr/share/cura/
 	cp scripts/linux/cura.py scripts/linux/${BUILD_TARGET}/usr/share/cura/
 	cp -a Power/power scripts/linux/${BUILD_TARGET}/usr/share/cura/
@@ -176,7 +178,7 @@ fi
 #############################
 
 if [ "$BUILD_TARGET" = "debian_amd64" ]; then
-        export CXX="g++ -m64"
+    export CXX="g++ -m64"
 	if [ ! -d "Power" ]; then
 		git clone https://github.com/GreatFruitOmsk/Power
 	else
@@ -190,6 +192,8 @@ if [ "$BUILD_TARGET" = "debian_amd64" ]; then
 	rm -rf scripts/linux/${BUILD_TARGET}/usr/share/cura
 	mkdir -p scripts/linux/${BUILD_TARGET}/usr/share/cura
 	cp -a Cura scripts/linux/${BUILD_TARGET}/usr/share/cura/
+	cp -a resources scripts/linux/${BUILD_TARGET}/usr/share/cura/
+	cp -a plugins scripts/linux/${BUILD_TARGET}/usr/share/cura/
 	cp -a CuraEngine/CuraEngine scripts/linux/${BUILD_TARGET}/usr/share/cura/
 	cp scripts/linux/cura.py scripts/linux/${BUILD_TARGET}/usr/share/cura/
 	cp -a Power/power scripts/linux/${BUILD_TARGET}/usr/share/cura/
@@ -289,8 +293,10 @@ if [ $BUILD_TARGET = "win32" ]; then
 fi
 
 #add Cura
-mkdir -p ${TARGET_DIR}/Cura
+mkdir -p ${TARGET_DIR}/Cura ${TARGET_DIR}/resources ${TARGET_DIR}/plugins
 cp -a Cura/* ${TARGET_DIR}/Cura
+cp -a resources/* ${TARGET_DIR}/resources
+cp -a plugins/* ${TARGET_DIR}/plugins
 #Add cura version file
 echo $BUILD_NAME > ${TARGET_DIR}/Cura/version
 

@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 __copyright__ = "Copyright (C) 2013 David Braam - Released under terms of the AGPLv3 License"
 
 import threading
@@ -602,7 +601,7 @@ class printWindow(wx.Frame):
 					gcodeList.append(line)
 				prevLineType = lineType
 		gcode = gcodeInterpreter.gcode()
-		gcode.loadList(gcodeList)
+		gcode.load(gcodeList)
 		#print "Loaded: %s (%d)" % (filename, len(gcodeList))
 		self.filename = filename
 		self.gcode = gcode

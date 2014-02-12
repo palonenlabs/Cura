@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 __copyright__ = "Copyright (C) 2013 David Braam - Released under terms of the AGPLv3 License"
 
 import sys
@@ -63,11 +62,14 @@ class CuraApp(wx.App):
 
 	def Win32SocketListener(self, port):
 		import socket
-		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		sock.bind(("127.0.0.1", port))
-		while True:
-			data, addr = sock.recvfrom(2048)
-			self.mainWindow.OnDropFiles(data.split('\0'))
+		try:
+			sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+			sock.bind(("127.0.0.1", port))
+			while True:
+				data, addr = sock.recvfrom(2048)
+				self.mainWindow.OnDropFiles(data.split('\0'))
+		except:
+			pass
 
 	def afterSplashCallback(self):
 		#These imports take most of the time and thus should be done after showing the splashscreen
@@ -133,7 +135,7 @@ class CuraApp(wx.App):
 
 		setFullScreenCapable(self.mainWindow)
 
-if platform.system() == "Darwin":
+if platform.system() == "Darwin": #Mac magic. Dragons live here. THis sets full screen options.
 	try:
 		import ctypes, objc
 		_objc = ctypes.PyDLL(objc._objc.__file__)
