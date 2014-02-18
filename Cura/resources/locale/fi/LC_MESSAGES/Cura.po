@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-12 18:01+0200\n"
+"POT-Creation-Date: 2014-02-18 15:58+0200\n"
 "PO-Revision-Date: 2014-01-30 13:23+0200\n"
 "Last-Translator: Henry Palonen <henry.palonen@palonenlabs.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -751,9 +751,21 @@ msgstr "Käytät viimeisintä Curan versiota!"
 msgid "Awesome!"
 msgstr "Mahtavaa!"
 
+#: Cura/gui/mainWindow.py:598
+msgid "Basic"
+msgstr ""
+
+#: Cura/gui/mainWindow.py:602
+msgid "Advanced"
+msgstr ""
+
 #: Cura/gui/mainWindow.py:608
 msgid "Plugins"
 msgstr "Lisäosat"
+
+#: Cura/gui/mainWindow.py:615
+msgid "Start/End-GCode"
+msgstr ""
 
 #: Cura/gui/pluginPanel.py:27
 msgid "Plugins:"

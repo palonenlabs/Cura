@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cura\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-01-30 13:22+0200\n"
-"PO-Revision-Date: 2014-01-30 13:23+0200\n"
+"PO-Revision-Date: 2014-02-18 15:57+0200\n"
 "Last-Translator: Henry Palonen <henry.palonen@palonenlabs.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fi_FI\n"
@@ -32,7 +32,7 @@ msgstr "'Lisää uusi tulostin'-apuri"
 
 #: Cura/gui/configWizard.py:223
 msgid "First time run wizard"
-msgstr "Ensimmäisen käynnistyksen apuri"
+msgstr "Ohjattu laitteen asennus"
 
 #: Cura/gui/configWizard.py:224
 msgid "Welcome, and thanks for trying Cura!"
@@ -40,7 +40,7 @@ msgstr "Tervetuloa ja kiitos kun valitsit Curan!"
 
 #: Cura/gui/configWizard.py:226
 msgid "This wizard will help you in setting up Cura for your machine."
-msgstr "Tämä apuri avustaa tulostimesi asennuksessa"
+msgstr "Seuraavaksi määritellään 3D-tulostimen asetukset."
 
 #: Cura/gui/configWizard.py:240
 msgid "The following pre-defined machine profiles are available"
@@ -127,7 +127,7 @@ msgstr "Millainen tulostimesi on:"
 
 #: Cura/gui/configWizard.py:316
 msgid "Other (Ex: RepRap, MakerBot)"
-msgstr "Muu (esim. Minifactory, RepRap, MakerBot)"
+msgstr "Muu (esim. miniFactory, RepRap, MakerBot)"
 
 #: Cura/gui/configWizard.py:319
 msgid ""
@@ -411,23 +411,29 @@ msgstr "Tulostusalustan korkeuden säätö"
 
 #: Cura/gui/configWizard.py:1328
 msgid "This wizard will help you in calibrating printer head Z offset."
-msgstr "Tämä apuri avustaa sinua tulostuskorkeuden säädössä"
+msgstr ""
+"Tämä ohjattu asetustoiminto auttaa sinua määrittämään helposti suuttimen "
+"aloituskorkeuden."
 
 #: Cura/gui/configWizard.py:1329
 msgid ""
 "Please make sure printer bed is clear of objects and head is clear to move."
 msgstr ""
-"Ole hyvä ja tarkista että tulostusalusta on tyhjä ja tulostuspää voi liikkua "
-"vapaasti."
+"Tarkista että tulostusalusta on tyhjä ja että akselit voivat liikkua "
+"vapaasti.\n"
+"\n"
+"Aseta normaali A4-paperi tulostusalustalle."
 
 #: Cura/gui/configWizard.py:1331
 msgid ""
 "Please adjust height with 'Up' and 'Down' buttons until normal\n"
 "A4 paper just barely moves between extruder nozzle and bed."
 msgstr ""
-"Säädä tulostuspään korkeutta 'Ylös' ja 'Alas' napeilla niin että saat juuri "
-"ja juuri\n"
-"liikuteltua A4-paperia alustan ja tulostuspään välillä."
+"Säädä suuttimen etäisyys tulostusalustasta 'Ylös' ja 'Alas' painikkeilla.\n"
+"Oikea etäisyys määritetään paperiarkin avulla. Suutin on silloin oikealla "
+"etäisyydellä\n"
+"tulostusalustasta kun paperi hieman hankaa suuttimeen mutta kuitenkin\n"
+"liikkuu edestakaisin suuttimen ja alustan välissä."
 
 #: Cura/gui/configWizard.py:1333
 msgid "Connect to printer"
@@ -448,7 +454,9 @@ msgstr "OK, nyt tulostuspää koskettaa paperia"
 #: Cura/gui/configWizard.py:1434
 #, python-format
 msgid "Done! Z calibration: %f"
-msgstr "Valmis! Z kalibrointi: %f"
+msgstr ""
+"Suuttimen aloituskorkeus on nyt asetettu. Arvoksi tallennettiin %f. Jatka "
+"painamalla \"Valmis\"."
 
 #: Cura/gui/configWizard.py:1476
 msgid "Homing printer ..."
@@ -456,14 +464,13 @@ msgstr "Ajetaan kotiasemaan ..."
 
 #: Cura/gui/configWizard.py:1490
 msgid "Please adjust with Up/Down until A4 just barely moves"
-msgstr "Säädä 'Ylös'/'Alas' kunnes A4-paperi juuri ja juuri liikkuu"
+msgstr "Säädä 'Ylös'/'Alas' - painikkeilla suuttimen etäisyyttä"
 
 #: Cura/gui/firmwareInstall.py:45
 msgid ""
 "I am sorry, but Cura does not ship with a default firmware for your machine "
 "configuration."
-msgstr ""
-"Olemme pahoillamme mutta Cura ei sisällä oletus firmwarea tulostimellesi."
+msgstr "Olemme pahoillamme mutta Cura ei sisällä firmwarea tulostimellesi."
 
 #: Cura/gui/firmwareInstall.py:45 Cura/gui/firmwareInstall.py:49
 #: Cura/gui/firmwareInstall.py:104 Cura/gui/mainWindow.py:491
@@ -617,19 +624,19 @@ msgstr "Tulostin"
 
 #: Cura/gui/mainWindow.py:145
 msgid "Switch to quickprint..."
-msgstr "Vaihda pikatulostukseen..."
+msgstr "Näytä suppeat tulostusasetukset..."
 
 #: Cura/gui/mainWindow.py:149
 msgid "Switch to full settings..."
-msgstr "Vaihda laajempiin asetuksiin..."
+msgstr "Näytä laajat tulostusasetukset..."
 
 #: Cura/gui/mainWindow.py:154
 msgid "Open expert settings...\tCTRL+E"
-msgstr "Avaa laajat asetukset\tCTRL+E"
+msgstr "Tulostuksen erikoisasetukset\tCTRL+E"
 
 #: Cura/gui/mainWindow.py:158
 msgid "Run first run wizard..."
-msgstr "Aja ensimmäisen käynnistyksen avustaja..."
+msgstr "Ohjattu laitteen asentaminen..."
 
 #: Cura/gui/mainWindow.py:160
 msgid "Run bed leveling wizard..."
@@ -641,11 +648,11 @@ msgstr "Aja tulostuspään offset-apuri..."
 
 #: Cura/gui/mainWindow.py:164
 msgid "Run head Z offset wizard..."
-msgstr "Avusta tulostuskorkeuden säädössä..."
+msgstr "Ohjattu suuttimen aloituskorkeuden asetus..."
 
 #: Cura/gui/mainWindow.py:167
 msgid "Expert"
-msgstr "Asiantuntija"
+msgstr "Asetukset"
 
 #: Cura/gui/mainWindow.py:170
 msgid "Online documentation..."
@@ -1365,63 +1372,65 @@ msgid ""
 "Without this check the design will not be public\n"
 "until you publish it yourself on YouMagine.com"
 msgstr ""
+"Julkaise malli heti latauksen jälkeen.\n"
+" "
 
 #: Cura/gui/tools/youmagineGui.py:305
 msgid "Design name:"
-msgstr ""
+msgstr "Mallin nimi:"
 
 #: Cura/gui/tools/youmagineGui.py:307
 msgid "Description:"
-msgstr ""
+msgstr "Kommentti:"
 
 #: Cura/gui/tools/youmagineGui.py:309
 msgid "Category:"
-msgstr ""
+msgstr "Kategoria:"
 
 #: Cura/gui/tools/youmagineGui.py:311
 msgid "License:"
-msgstr ""
+msgstr "Lisenssi:"
 
 #: Cura/gui/tools/youmagineGui.py:314
 msgid "Images:"
-msgstr ""
+msgstr "Kuvat:"
 
 #: Cura/gui/tools/youmagineGui.py:317
 msgid "Related design files:"
-msgstr ""
+msgstr "Mallitiedostot:"
 
 #: Cura/gui/tools/youmagineGui.py:340
 msgid "The name cannot be empty"
-msgstr ""
+msgstr "Nimi ei voi olla tyhjä"
 
 #: Cura/gui/tools/youmagineGui.py:340 Cura/gui/tools/youmagineGui.py:344
 msgid "New design error."
-msgstr ""
+msgstr "Mallivirhe uudessa mallissa."
 
 #: Cura/gui/tools/youmagineGui.py:344
 msgid "The description cannot be empty"
-msgstr ""
+msgstr "Selite ei voi olla tyhjä"
 
 #: Cura/gui/tools/youmagineGui.py:370
 msgid "No webcam found on your system"
-msgstr ""
+msgstr "Kameraa ei löydetty"
 
 #: Cura/gui/tools/youmagineGui.py:370
 msgid "Webcam error"
-msgstr ""
+msgstr "Kameravirhe"
 
 #: Cura/gui/util/openglGui.py:241
 msgid "An error has occurred during the 3D view drawing."
-msgstr ""
+msgstr "3D näkymää ladattessa tapahtui virhe"
 
 #: Cura/gui/util/openglGui.py:248
 msgid "3D window error"
-msgstr ""
+msgstr "3D ikkunan virhe"
 
 #: Cura/util/profile.py:154 Cura/util/profile.py:155 Cura/util/profile.py:156
 #: Cura/util/profile.py:183 Cura/util/profile.py:184 Cura/util/profile.py:186
 msgid "Quality"
-msgstr ""
+msgstr "Laatu"
 
 #: Cura/util/profile.py:154
 msgid "Layer height (mm)"
@@ -1455,13 +1464,15 @@ msgstr ""
 
 #: Cura/util/profile.py:156
 msgid "Enable retraction"
-msgstr ""
+msgstr "Takaisinveto päälle"
 
 #: Cura/util/profile.py:156
 msgid ""
 "Retract the filament when the nozzle is moving over a none-printed area. "
 "Details about the retraction can be configured in the advanced tab."
 msgstr ""
+"Vedä filamenttia takaisinpäin kun suutin liikkuu tyhjän kohdan yli. Voit "
+"konfiguroida tämän tarkemmin tulostuksen erikoisasetuksissa."
 
 #: Cura/util/profile.py:157 Cura/util/profile.py:158
 msgid "Fill"
@@ -1478,6 +1489,11 @@ msgid ""
 "Having this value a multiple of the layer thickness makes sense. And keep it "
 "near your wall thickness to make an evenly strong part."
 msgstr ""
+"Tämä säätää ensimmäisen ja viimeisen tulostuskerroksen vahvuutta. Täydellä "
+"täytöllä täytettyjen kerrosten lukumäärä lasketaan sekä tästä asetuksesta "
+"että kerrosvahvuudesta. On hyvä pitää tämä kerrosvahvuuden kerrannaisena. "
+"Jos haluat tasavahvan kappaleen, pidä tämä mahdollisimman lähellä "
+"seinämävahvuutta."
 
 #: Cura/util/profile.py:158
 msgid "Fill Density (%)"
@@ -1491,6 +1507,10 @@ msgid ""
 "This won't affect the outside of the print and only adjusts how strong the "
 "part becomes."
 msgstr ""
+"Tästä voit asettaa kuinka paljon kappaleen sisustaa täytetään. Täysin "
+"kiinteälle kappaleelle käytä arvoa 100%. Jos haluat tulostaa vain seinämät, "
+"käytä arvoa 0%. Yleensä 20% on hyvä täyttö yleiskäyttöön.\n"
+"Tämä ei vaikuta kappaleen ulkopintaan vaan ainoastaan kappaleen lujuuteen."
 
 #: Cura/util/profile.py:159
 msgid ""
@@ -1498,6 +1518,8 @@ msgid ""
 "of the infill, and used to calculate the amount of outside wall lines and "
 "thickness for the wall thickness you entered in the print settings."
 msgstr ""
+"Suuttimen koko on hyvin tärkeä. Tätä käytetään sekä täytön tulostusleveyden "
+"että seinämien viivamäärän laskemiseen. "
 
 #: Cura/util/profile.py:160 Cura/util/profile.py:161 Cura/util/profile.py:162
 #: Cura/util/profile.py:163 Cura/util/profile.py:164 Cura/util/profile.py:165
@@ -1515,6 +1537,9 @@ msgid ""
 "depends on a lot of factors. So you will be experimenting with optimal "
 "settings for this."
 msgstr ""
+"Nopeus jolla tulostus tapahtuu. miniFactory3:lle hyvä alkuasetus on noin "
+"40-50mm/s. Lopullinen nopeus on monen tekijän summa joten kannattaa kokeilla "
+"eri nopeuksia jotta saat hyvän tulosteen."
 
 #: Cura/util/profile.py:161
 msgid "Printing temperature (C)"
@@ -1527,18 +1552,21 @@ msgid ""
 "For PLA a value of 210C is usually used.\n"
 "For ABS a value of 230C or higher is required."
 msgstr ""
+"Tulosteen lämpötila. Aseta 0 jos haluat esilämmittää pään itse.\n"
+"PLA:lle käytetään usein noin 210 C lämpötilaa.\n"
+"ABS:lle käytetään usein noin 230 C tai korkeampaa lämpötilaa."
 
 #: Cura/util/profile.py:162
 msgid "2nd nozzle temperature (C)"
-msgstr ""
+msgstr "2. suuttimen lämpötila (C)"
 
 #: Cura/util/profile.py:163
 msgid "3th nozzle temperature (C)"
-msgstr ""
+msgstr "3. suuttimen lämpötila (C)"
 
 #: Cura/util/profile.py:164
 msgid "4th nozzle temperature (C)"
-msgstr ""
+msgstr "4. suuttimen lämpötila (C)"
 
 #: Cura/util/profile.py:165
 msgid "Bed temperature (C)"
@@ -1548,6 +1576,7 @@ msgstr "Tulostusalustan lämpötila (C)"
 msgid ""
 "Temperature used for the heated printer bed. Set at 0 to pre-heat yourself."
 msgstr ""
+"Tulostusalustan lämpötila. Aseta 0 jos haluat esilämmittää alustan itse."
 
 #: Cura/util/profile.py:166 Cura/util/profile.py:167
 msgid "None"
@@ -1581,6 +1610,13 @@ msgid ""
 "touch the build platform.\n"
 "Everywhere creates support even on top of parts of the model."
 msgstr ""
+"Tuen tyyppi.\n"
+"\"Tulostusalustaa koskettaviin\" on yleisin käytetty.\n"
+"\n"
+"\"Ei mitään\" ei lisää minkäänlaista tukea.\n"
+"\"Tulostusalustaa koskettaviin\" lisää tukea vain sinne missä tukirakenne "
+"koskettaa tulostusalustaa.\"Joka puolelle\" lisää tuen myös vaikka "
+"tukirakenne jouduttaisiin rakentamaan kappaleen päälle."
 
 #: Cura/util/profile.py:167 Cura/util/profile.py:216
 msgid "Brim"
@@ -1606,6 +1642,14 @@ msgid ""
 "this and your object.\n"
 "(Note that enabling the brim or raft disables the skirt)"
 msgstr ""
+"Eri asetuksia joilla pyritään estämään kulmien käpristyminen.\n"
+"\"Reuna\" lisää useita yhden kerroksen vahvuisia kierroksia kappaleen "
+"ympäri. Reuna on helppo leikata pois jälkeenpäin ja onkin siksi suositeltu "
+"vaihtoehto.\n"
+"\"Lautta\" lisää paksun rasterin tulostusalustan päälle ja ohuen kerroksen "
+"kappaleen ja tämän rasterin väliin.\n"
+"(Huomaa että tulostus aloitetaan ilman alkukierrosta sekä \"reuna\" että "
+"\"lautta\"-vaihtoehdoilla)"
 
 #: Cura/util/profile.py:168
 msgid "Both"
@@ -1613,15 +1657,15 @@ msgstr "Molemmat"
 
 #: Cura/util/profile.py:168
 msgid "First extruder"
-msgstr ""
+msgstr "Ensimmäinen suutin"
 
 #: Cura/util/profile.py:168
 msgid "Second extruder"
-msgstr ""
+msgstr "Toinen suutin"
 
 #: Cura/util/profile.py:168
 msgid "Support dual extrusion"
-msgstr ""
+msgstr "Kahden suuttimen tuki"
 
 #: Cura/util/profile.py:168
 msgid ""
@@ -1631,15 +1675,15 @@ msgid ""
 "select an extruder to use for support material. This causes more extruder "
 "switches.\n"
 "You can also use the 2nd extruder for soluble support materials."
-msgstr ""
+msgstr "Mitä suutinta käytetään tukimateriaalille."
 
 #: Cura/util/profile.py:169 Cura/util/profile.py:170 Cura/util/profile.py:171
 msgid "Dual extrusion"
-msgstr ""
+msgstr "Tuplasuuttimella tulostus"
 
 #: Cura/util/profile.py:169
 msgid "Wipe&prime tower"
-msgstr ""
+msgstr "Pyyhi ja valmistele -alue"
 
 #: Cura/util/profile.py:169
 msgid ""
@@ -1648,10 +1692,14 @@ msgid ""
 "The old nozzle is wiped off on the tower before the new nozzle is used to "
 "print the 2nd color."
 msgstr ""
+"Pyyhintä-alue on torni joka tulostetaan jokaisella kerroksella kun "
+"vaihdetaan suutinten välillä.\n"
+"Vanha suutin pyyhitään pyyhintä-alueeseen ennenkuin toista suutinta "
+"käytetään."
 
 #: Cura/util/profile.py:170
 msgid "Wipe&prime tower volume per layer (mm3)"
-msgstr ""
+msgstr "Pyyhintä-alueen tilavuus per kerros (mm3)"
 
 #: Cura/util/profile.py:170
 msgid ""
@@ -1661,10 +1709,12 @@ msgid ""
 "height.\n"
 "This means that with thinner layers, your tower gets bigger."
 msgstr ""
+"Pyyhintä-alueella käytettävän materiaalin määrä.\n"
+" "
 
 #: Cura/util/profile.py:171
 msgid "Ooze shield"
-msgstr ""
+msgstr "Valumisen suoja"
 
 #: Cura/util/profile.py:171
 msgid ""
@@ -1672,6 +1722,9 @@ msgid ""
 "mm from the object.\n"
 "This shield catches any oozing from the unused nozzle in dual-extrusion."
 msgstr ""
+"Valumisen suoja on yhden vedon paksuinen kuori muutaman millimetrin päässä "
+"kappaleen ympärillä.\n"
+"Tämä suoja estää toisen suuttimen valumisen kun käytetään kahta suutinta."
 
 #: Cura/util/profile.py:172 Cura/util/profile.py:173 Cura/util/profile.py:174
 #: Cura/util/profile.py:175 Cura/util/profile.py:176
@@ -1688,6 +1741,10 @@ msgid ""
 "If you cannot measure this value you will have to calibrate it, a higher "
 "number means less extrusion, a smaller number generates more extrusion."
 msgstr ""
+"Filamentin paksuus, mahdollisimman tarkasti.\n"
+"Jos et voi mitata filamenttia, sinun täytyy hakea oikea arvo kalibroimalla "
+"tulosteita. Pienempi numero tässä aiheuttaa enemmän pursotusta ja suurempi "
+"numero vähemmän. Yleisimpiä arvoja ovat 1.75 mm ja 2.98 mm."
 
 #: Cura/util/profile.py:173
 msgid "Diameter2 (mm)"
@@ -1728,6 +1785,8 @@ msgid ""
 "Flow compensation, the amount of material extruded is multiplied by this "
 "value"
 msgstr ""
+"Virtauksen kompensaatio. Pursotettavan materiaan määrä kerrotaan tällä "
+"arvolla."
 
 #: Cura/util/profile.py:177 Cura/util/profile.py:178 Cura/util/profile.py:179
 #: Cura/util/profile.py:180 Cura/util/profile.py:181 Cura/util/profile.py:182
@@ -1743,6 +1802,8 @@ msgid ""
 "Speed at which the filament is retracted, a higher retraction speed works "
 "better. But a very high retraction speed can lead to filament grinding."
 msgstr ""
+"Takaisinvedon nopeus. Yleensä nopeampi takaisinveto toimii paremmin. Liian "
+"nopea takaisinveto saattaa johtaa filamentin liialliseen kulumiseen. "
 
 #: Cura/util/profile.py:178
 msgid "Distance (mm)"
@@ -1753,6 +1814,8 @@ msgid ""
 "Amount of retraction, set at 0 for no retraction at all. A value of 4.5mm "
 "seems to generate good results."
 msgstr ""
+"Takaisinvedon määrä. Aseta 0 jos haluat ettei filamenttia vedetä lainkaan "
+"takaisin. Noin 4.5 mm näyttää antavan hyviä tuloksia."
 
 #: Cura/util/profile.py:179
 msgid "Dual extrusion switch amount (mm)"
@@ -1766,13 +1829,15 @@ msgstr ""
 
 #: Cura/util/profile.py:180
 msgid "Minimum travel (mm)"
-msgstr ""
+msgstr "Minimiliike (mm)"
 
 #: Cura/util/profile.py:180
 msgid ""
 "Minimum amount of travel needed for a retraction to happen at all. To make "
 "sure you do not get a lot of retractions in a small area."
 msgstr ""
+"Liikkeen minimimäärä jotta takaisinvetoa tehtäisiin. Tällä voidaan estää "
+"jatkuva takaisinveto samalla pienellä alueella."
 
 #: Cura/util/profile.py:181
 msgid "Enable combing"
@@ -1787,7 +1852,7 @@ msgstr ""
 
 #: Cura/util/profile.py:182
 msgid "Minimal extrusion before retracting (mm)"
-msgstr ""
+msgstr "Pursotuksen minimimäärä ennen takaisinvetoa (mm)"
 
 #: Cura/util/profile.py:182
 msgid ""
@@ -1797,6 +1862,8 @@ msgid ""
 "This avoids retraction a lot on the same piece of filament which flattens "
 "the filament and causes grinding issues."
 msgstr ""
+"Pursotettavan materiaalin minimimäärä ennen uutta takaisinvetoa. Tällä "
+"voidaan estää jatkuva takaisinveto lähes samassa kohdassa filamenttia."
 
 #: Cura/util/profile.py:183
 msgid "Initial layer thickness (mm)"
@@ -1808,16 +1875,21 @@ msgid ""
 "to the bed easier. Set to 0.0 to have the bottom layer thickness the same as "
 "the other layers."
 msgstr ""
+"Alimman kerroksen kerrosvahvuus. Paksumpi alin kerros auttaa kappaletta "
+"tarttumaan paremmin. Aseta 0 jos haluat että alin kerros on saman vahvuinen "
+"kuin muutkin kerrokset."
 
 #: Cura/util/profile.py:184
 msgid "Cut off object bottom (mm)"
-msgstr ""
+msgstr "Alaosan leikkaus (mm)"
 
 #: Cura/util/profile.py:184
 msgid ""
 "Sinks the object into the platform, this can be used for objects that do not "
 "have a flat bottom and thus create a too small first layer."
 msgstr ""
+"\"Upottaa\" kappaleen tulostusalustaan. Tällä voidaan leikata kappaleen "
+"alaosaa pois jotta saataisiin alaosasta tasaisisempi."
 
 #: Cura/util/profile.py:186
 msgid "Dual extrusion overlap (mm)"
@@ -1838,6 +1910,8 @@ msgid ""
 "Speed at which travel moves are done, a high quality build Ultimaker can "
 "reach speeds of 250mm/s. But some machines might miss steps then."
 msgstr ""
+"Nopeus jolla siirtoliikkeet tehdään. miniFactory3:lla voidaan voidaan "
+"käyttää noin 80 mm/s arvoja."
 
 #: Cura/util/profile.py:188
 msgid "Bottom layer speed (mm/s)"
@@ -1848,6 +1922,8 @@ msgid ""
 "Print speed for the bottom layer, you want to print the first layer slower "
 "so it sticks better to the printer bed."
 msgstr ""
+"Alimman kerroksen tulostusnopeus. Jos tulostat alimman kerroksen hieman "
+"hitaammin, se tarttuu yleensä paremmin."
 
 #: Cura/util/profile.py:189
 msgid "Infill speed (mm/s)"
@@ -2378,26 +2454,26 @@ msgstr ""
 
 #: Cura/util/profile.py:378
 msgid "Serial port"
-msgstr ""
+msgstr "Sarjaportti"
 
 #: Cura/util/profile.py:378
 msgid "Serial port to use for communication with the printer"
-msgstr ""
+msgstr "Tulostimen kanssa käytettävä sarjaportti"
 
 #: Cura/util/profile.py:380
 msgid "Baudrate"
-msgstr ""
+msgstr "Baudinopeus"
 
 #: Cura/util/profile.py:380
 msgid ""
 "Speed of the serial port communication\n"
 "Needs to match your firmware settings\n"
 "Common values are 250000, 115200, 57600"
-msgstr ""
+msgstr "Sarjaportin nopeus. miniFactory3 käyttää 115200 nopeutta."
 
 #: Cura/util/profile.py:383
 msgid "Head size towards X min (mm)"
-msgstr ""
+msgstr "Tulostuspään koko X min suunnassa (mm)"
 
 #: Cura/util/profile.py:383
 msgid ""
@@ -2405,10 +2481,12 @@ msgid ""
 "nozzle towards the outer part of the head. 75mm for an Ultimaker if the fan "
 "is on the left side."
 msgstr ""
+"Tulostuspään koko jos tulostetaan montaa kappaletta, mitattuna suuttimen "
+"kärjestä uloimpaan osaan päätä."
 
 #: Cura/util/profile.py:384
 msgid "Head size towards Y min (mm)"
-msgstr ""
+msgstr "Tulostuspään koko Y min suunnassa (mm)"
 
 #: Cura/util/profile.py:384 Cura/util/profile.py:385
 msgid ""
@@ -2416,14 +2494,16 @@ msgid ""
 "nozzle towards the outer part of the head. 18mm for an Ultimaker if the fan "
 "is on the left side."
 msgstr ""
+"Tulostuspään koko jos tulostetaan montaa kappaletta, mitattuna suuttimen "
+"kärjestä uloimpaan osaan päätä."
 
 #: Cura/util/profile.py:385
 msgid "Head size towards X max (mm)"
-msgstr ""
+msgstr "Tulostuspään koko X max suunnassa (mm)"
 
 #: Cura/util/profile.py:386
 msgid "Head size towards Y max (mm)"
-msgstr ""
+msgstr "Tulostuspään koko Y max suunnassa (mm)"
 
 #: Cura/util/profile.py:386
 msgid ""
@@ -2431,10 +2511,12 @@ msgid ""
 "nozzle towards the outer part of the head. 35mm for an Ultimaker if the fan "
 "is on the left side."
 msgstr ""
+"Tulostuspään koko jos tulostetaan montaa kappaletta, mitattuna suuttimen "
+"kärjestä uloimpaan osaan päätä."
 
 #: Cura/util/profile.py:387
 msgid "Printer gantry height (mm)"
-msgstr ""
+msgstr "Hyllyn korkeus (mm)"
 
 #: Cura/util/profile.py:387
 msgid ""
@@ -2442,6 +2524,8 @@ msgid ""
 "then this then you cannot print multiple objects one for one. 60mm for an "
 "Ultimaker."
 msgstr ""
+"Tulostinpäätä ylhäällä pitävän hyllyn korkeus. Jos kappale on tätä "
+"korkeampi, et voi tulostaa montaa kappaletta samaan aikaan yksi kerrallaan."
 
 #: Cura/util/profile.py:389
 #, python-format
@@ -2459,6 +2543,8 @@ msgid ""
 "Thicker layers then %.2fmm (80%% nozzle size) usually give bad results and "
 "are not recommended."
 msgstr ""
+"Yleensä suurempi kuin %.2fmm (80%% suuttimen koko) kerrosvahvuus antaa "
+"huonoja tuloksia ja sitä ei suositella käytettäväksi."
 
 #: Cura/util/profile.py:393
 msgid ""
@@ -2487,6 +2573,7 @@ msgid ""
 "It is highly unlikely that your machine can achieve a travel speed above "
 "300mm/s"
 msgstr ""
+"On erittäin epätodennäköistä että tulostimesi pystyy yli 300mm/s nopeuksiin"
 
 #: Cura/util/profile.py:404
 #, python-format
@@ -2494,3 +2581,5 @@ msgid ""
 "A bottom layer of more then %.2fmm (3/4 nozzle size) usually give bad "
 "results and is not recommended."
 msgstr ""
+"Alin kerros jonka vahvuus on yli %.2fmm (3/4 suuttimen koosta) antaa yleensä "
+"huonoja tuloksia ja sitä ei suositella käytettäväksi."
