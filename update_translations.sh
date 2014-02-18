@@ -1,5 +1,5 @@
 #/bin/sh
-xgettext --language=Python --copyright-holder='David Braam' --keyword=_ --output=Cura/resources/locale/Cura.pot --from-code=UTF-8 `find Cura -name "*.py"`
+xgettext --language=Python --copyright-holder='David Braam' --keyword=_ --output=resources/locale/Cura.pot --from-code=UTF-8 `find Cura -name "*.py"`
 
 for LANG in `ls resources/locale`; do
 	if [ -e resources/locale/$LANG/LC_MESSAGES/Cura.po ]; then
