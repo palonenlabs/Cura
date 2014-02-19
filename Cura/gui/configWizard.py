@@ -1435,6 +1435,8 @@ class headZOffsetCalibrationPage(InfoPage):
 					self.comm.sendCommand('M206 Z%f' % newvalue)
 					self.comm.sendCommand('M500')
 					self.comm.sendCommand('G90')
+					self.comm.sendCommand('G28 Z0')
+					self.comm.sendCommand('M84')
 					
 					wx.CallAfter(self.resumeButton.Enable, False)
 					wx.CallAfter(self.upButton.Enable, False)
