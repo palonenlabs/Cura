@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-24 13:22+0200\n"
-"PO-Revision-Date: 2014-02-24 13:25+0200\n"
+"POT-Creation-Date: 2014-02-24 13:32+0200\n"
+"PO-Revision-Date: 2014-02-24 13:41+0200\n"
 "Last-Translator: Henry Palonen <henry.palonen@palonenlabs.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fi_FI\n"
@@ -276,7 +276,7 @@ msgstr "Näytä virheloki"
 #: Cura/gui/configWizard.py:509 Cura/gui/configWizard.py:1381
 #: Cura/gui/configWizard.py:1561
 msgid "Connecting to machine."
-msgstr "Kytkeydytään tulostimeen"
+msgstr "Yhdistetään tulostimeen"
 
 #: Cura/gui/configWizard.py:530
 msgid "Cooldown before temperature check."
@@ -476,11 +476,8 @@ msgid "Chage filament wizard"
 msgstr "Filamentin vaihto"
 
 #: Cura/gui/configWizard.py:1523
-#, fuzzy
 msgid "This wizard helps you change the printer filament"
-msgstr ""
-"Tämä ohjattu asetustoiminto auttaa sinua määrittämään helposti suuttimen "
-"aloituskorkeuden."
+msgstr "Tämä ohjattu asetustoiminto auttaa sinua vaihtamaan filamentin"
 
 #: Cura/gui/configWizard.py:1531
 msgid "Remove old filament"
@@ -488,21 +485,20 @@ msgstr "Poista vanha filamentti"
 
 #: Cura/gui/configWizard.py:1534
 msgid "Load new filament"
-msgstr "Lataa uusi filamentti"
+msgstr "Syötä uusi filamentti"
 
 #: Cura/gui/configWizard.py:1550 Cura/gui/configWizard.py:1598
 msgid "Heating up."
 msgstr "Lämmitetään"
 
 #: Cura/gui/configWizard.py:1571
-#, fuzzy
 msgid "Loading new filament..."
-msgstr "Ladataan tiedostoa %s..."
+msgstr "Ladataan filamenttia..."
 
 #: Cura/gui/configWizard.py:1581
 #, python-format
-msgid "Heating up. %d / %d"
-msgstr "Lämmitetään %d / %d"
+msgid "Heating up. %i / %i"
+msgstr "Lämmitetään. %d / %d"
 
 #: Cura/gui/configWizard.py:1586
 msgid "Please insert new filament to extruder."
@@ -697,9 +693,8 @@ msgid "Run head Z offset wizard..."
 msgstr "Ohjattu suuttimen aloituskorkeuden asetus..."
 
 #: Cura/gui/mainWindow.py:165
-#, fuzzy
 msgid "Change Filament..."
-msgstr "Filamentti"
+msgstr "Vaihda filamentti"
 
 #: Cura/gui/mainWindow.py:168
 msgid "Expert"
@@ -854,9 +849,8 @@ msgid "Error: no plugin selected"
 msgstr "Virhe: Ei lisäosaa valittuna"
 
 #: Cura/gui/preferencesDialog.py:28
-#, fuzzy
 msgid "Print window"
-msgstr "Tulostaa"
+msgstr "Tulostusikkuna"
 
 #: Cura/gui/preferencesDialog.py:31
 msgid "Colours"
@@ -1018,9 +1012,9 @@ msgid "Filament cost: %s\n"
 msgstr "Filamentin hinta: %s\n"
 
 #: Cura/gui/printWindow2.py:33 Cura/gui/printWindow2.py:298
-#, fuzzy, python-format
+#, python-format
 msgid "Printing on %s"
-msgstr "Tulostaa"
+msgstr "Tulostaa %s"
 
 #: Cura/gui/printWindow2.py:321
 msgid ""
@@ -1422,9 +1416,9 @@ msgid "Webcam error"
 msgstr "Kameravirhe"
 
 #: Cura/gui/util/engineResultView.py:150
-#, fuzzy, python-format
+#, python-format
 msgid "Loading toolpath for visualization (%d%%)"
-msgstr "Ladataan työstöradan kuvaa..."
+msgstr "Ladataan työstöradan kuvaa  (%d%%)"
 
 #: Cura/gui/util/openglGui.py:242
 msgid "An error has occurred during the 3D view drawing."

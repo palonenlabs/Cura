@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-24 13:22+0200\n"
+"POT-Creation-Date: 2014-02-24 13:32+0200\n"
 "PO-Revision-Date: 2013-10-03 08:10+0100\n"
 "Last-Translator: \n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -486,7 +486,7 @@ msgstr "Envoi du fichier %s..."
 
 #: Cura/gui/configWizard.py:1581
 #, python-format
-msgid "Heating up. %d / %d"
+msgid "Heating up. %i / %i"
 msgstr ""
 
 #: Cura/gui/configWizard.py:1586

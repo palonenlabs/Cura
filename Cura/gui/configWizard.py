@@ -1578,12 +1578,12 @@ class changeFilamentWizardPage(InfoPage):
 
 	def mcTempUpdate(self, temp, bedTemp, targetTemp, bedTargetTemp):
 		if self._wizardState == 1:
-			wx.CallAfter(self.infoBox.SetBusy, _("Heating up. %d / %d" % (temp[0], targetTemp[0])))
+			wx.CallAfter(self.infoBox.SetBusy, _("Heating up. %i / %i") % (temp[0], targetTemp[0]))
 			
-			if temp[0] >= 240:
+			if temp[0] >= 236:
 				self._wizardState = 2
-				self.comm.sendCommand('G1 F200 E-20')
-				wx.CallAfter(self.infoBox.SetAttention, _('Please insert new filament to extruder.'))
+				self.comm.sendCommand('G1 F200 E-40')
+				wx.CallAfter(self.infoBox.SetAttention, _("Please insert new filament to extruder."))
 				wx.CallAfter(self.resumeButton.Enable, True)
 				wx.CallAfter(self.resumeButton.SetFocus)
 
