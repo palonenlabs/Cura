@@ -3,6 +3,8 @@ __copyright__ = "Copyright (C) 2013 David Braam - Released under terms of the AG
 import wx
 import os
 import webbrowser
+import sys
+
 
 from Cura.gui import configBase
 from Cura.gui import expertConfig
@@ -30,6 +32,16 @@ class mainWindow(wx.Frame):
 
 		# allow dropping any file, restrict later
 		self.SetDropTarget(dropTarget.FileDropTarget(self.OnDropFiles))
+
+		# TODO: wxWidgets 2.9.4 has a bug when NSView does not register for dragged types when wx drop target is set. It was fixed in 2.9.5
+		if sys.platform.startswith('darwin'):
+			try:
+				import objc
+				nswindow = objc.objc_object(c_void_p=self.MacGetTopLevelWindowRef())
+				view = nswindow.contentView()
+				view.registerForDraggedTypes_([u'NSFilenamesPboardType'])
+			except:
+				pass
 
 		self.normalModeOnlyItems = []
 
@@ -328,12 +340,14 @@ class mainWindow(wx.Frame):
 		if int(profile.getMachineSetting('extruder_amount')) < 2:
 			self.headOffsetWizardMenuItem.Enable(False)
 		self.scene.updateProfileToControls()
+		self.scene._scene.pushFree()
 
 	def onOneAtATimeSwitch(self, e):
 		profile.putPreference('oneAtATime', self.oneAtATime.IsChecked())
 		if self.oneAtATime.IsChecked() and profile.getMachineSettingFloat('extruder_head_size_height') < 1:
 			wx.MessageBox(_('For "One at a time" printing, you need to have entered the correct head size and gantry height in the machine settings'), _('One at a time warning'), wx.OK | wx.ICON_WARNING)
 		self.scene.updateProfileToControls()
+		self.scene._scene.pushFree()
 		self.scene.sceneUpdated()
 
 	def OnPreferences(self, e):
@@ -351,7 +365,6 @@ class mainWindow(wx.Frame):
 
 	def OnDropFiles(self, files):
 		if len(files) > 0:
-			profile.setPluginConfig([])
 			self.updateProfileToAllControls()
 		self.scene.loadFiles(files)
 
@@ -567,7 +580,7 @@ class mainWindow(wx.Frame):
 		aboutBox.Show()
 
 	def OnClose(self, e):
-		profile.saveProfile(profile.getDefaultProfilePath())
+		profile.saveProfile(profile.getDefaultProfilePath(), True)
 
 		# Save the window position, size & state from the preferences file
 		profile.putPreference('window_maximized', self.IsMaximized())

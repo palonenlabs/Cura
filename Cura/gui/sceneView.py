@@ -15,13 +15,13 @@ OpenGL.ERROR_CHECKING = False
 from OpenGL.GLU import *
 from OpenGL.GL import *
 
-from Cura.gui import printWindow2
+from Cura.gui import printWindow
 from Cura.util import profile
 from Cura.util import meshLoader
 from Cura.util import objectScene
 from Cura.util import resources
 from Cura.util import sliceEngine
-from Cura.util import plugin
+from Cura.util import pluginInfo
 from Cura.util import removableStorage
 from Cura.util import explorer
 from Cura.util.printerConnection import printerConnectionManager
@@ -126,6 +126,8 @@ class SceneView(openglGui.glGuiPanel):
 		self._engine._result = sliceEngine.EngineResult()
 		with open(filename, "r") as f:
 			self._engine._result.setGCode(f.read())
+		self._engine._result.setFinished(True)
+		self._engineResultView.setResult(self._engine._result)
 		self.printButton.setBottomText('')
 		self.viewSelection.setValue(4)
 		self.printButton.setDisabled(False)
@@ -275,12 +277,12 @@ class SceneView(openglGui.glGuiPanel):
 		if connection.window is None or not connection.window:
 			connection.window = None
 			windowType = profile.getPreference('printing_window')
-			for p in plugin.getPluginList('printwindow'):
+			for p in pluginInfo.getPluginList('printwindow'):
 				if p.getName() == windowType:
-					connection.window = printWindow2.printWindowPlugin(self, connection, p.getFullFilename())
+					connection.window = printWindow.printWindowPlugin(self, connection, p.getFullFilename())
 					break
 			if connection.window is None:
-				connection.window = printWindow2.printWindowBasic(self, connection)
+				connection.window = printWindow.printWindowBasic(self, connection)
 		connection.window.Show()
 		connection.window.Raise()
 		if not connection.loadGCodeData(StringIO.StringIO(self._engine.getResult().getGCode())):
@@ -292,7 +294,7 @@ class SceneView(openglGui.glGuiPanel):
 	def showSaveGCode(self):
 		if len(self._scene._objectList) < 1:
 			return
-		dlg=wx.FileDialog(self, _("Save toolpath"), os.path.dirname(profile.getPreference('lastFile')), style=wx.FD_SAVE)
+		dlg=wx.FileDialog(self, _("Save toolpath"), os.path.dirname(profile.getPreference('lastFile')), style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
 		filename = self._scene._objectList[0].getName() + '.gcode'
 		dlg.SetFilename(filename)
 		dlg.SetWildcard('Toolpath (*.gcode)|*.gcode;*.g')
@@ -377,6 +379,7 @@ class SceneView(openglGui.glGuiPanel):
 	def OnViewChange(self):
 		if self.viewSelection.getValue() == 4:
 			self.viewMode = 'gcode'
+			self.tool = previewTools.toolNone(self)
 		elif self.viewSelection.getValue() == 1:
 			self.viewMode = 'overhang'
 		elif self.viewSelection.getValue() == 2:
@@ -470,6 +473,7 @@ class SceneView(openglGui.glGuiPanel):
 		while len(self._scene.objects()) > 0:
 			self._deleteObject(self._scene.objects()[0])
 		self._animView = openglGui.animation(self, self._viewTarget.copy(), numpy.array([0,0,0], numpy.float32), 0.5)
+		self._engineResultView.setResult(None)
 
 	def OnMultiply(self, e):
 		if self._focusObj is None:

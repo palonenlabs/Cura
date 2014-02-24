@@ -21,11 +21,15 @@ import struct
 import cStringIO as StringIO
 
 from Cura.util import profile
-from Cura.util import plugin
+from Cura.util import pluginInfo
 from Cura.util import version
 from Cura.util import gcodeInterpreter
 
 def getEngineFilename():
+	"""
+		Finds and returns the path to the current engine executable. This is OS depended.
+	:return: The full path to the engine executable.
+	"""
 	if platform.system() == 'Windows':
 		if version.isDevVersion() and os.path.exists('C:/Software/Cura_SteamEngine/_bin/Release/Cura_SteamEngine.exe'):
 			return 'C:/Software/Cura_SteamEngine/_bin/Release/Cura_SteamEngine.exe'
@@ -38,13 +42,11 @@ def getEngineFilename():
 		return '/usr/local/bin/CuraEngine'
 	return os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'CuraEngine'))
 
-def getTempFilename():
-	warnings.simplefilter('ignore')
-	ret = os.tempnam(None, "Cura_Tmp")
-	warnings.simplefilter('default')
-	return ret
-
 class EngineResult(object):
+	"""
+	Result from running the CuraEngine.
+	Contains the engine log, polygons retrieved from the engine, the GCode and some meta-data.
+	"""
 	def __init__(self):
 		self._engineLog = []
 		self._gcodeData = StringIO.StringIO()
@@ -78,6 +80,8 @@ class EngineResult(object):
 		return None
 
 	def getPrintTime(self):
+		if self._printTimeSeconds is None:
+			return ''
 		if int(self._printTimeSeconds / 60 / 60) < 1:
 			return '%d minutes' % (int(self._printTimeSeconds / 60) % 60)
 		if int(self._printTimeSeconds / 60 / 60) == 1:
@@ -156,8 +160,14 @@ class EngineResult(object):
 			pass
 
 class Engine(object):
+	"""
+	Class used to communicate with the CuraEngine.
+	The CuraEngine is ran as a 2nd process and reports back information trough stderr.
+	GCode trough stdout and has a socket connection for polygon information and loading the 3D model into the engine.
+	"""
 	GUI_CMD_REQUEST_MESH = 0x01
 	GUI_CMD_SEND_POLYGONS = 0x02
+	GUI_CMD_FINISH_OBJECT = 0x03
 
 	def __init__(self, progressCallback):
 		self._process = None
@@ -194,6 +204,7 @@ class Engine(object):
 			thread.start()
 
 	def _socketConnectionThread(self, sock):
+		layerNrOffset = 0
 		while True:
 			try:
 				data = sock.recv(4)
@@ -211,6 +222,7 @@ class Engine(object):
 			elif cmd == self.GUI_CMD_SEND_POLYGONS:
 				cnt = struct.unpack('@i', sock.recv(4))[0]
 				layerNr = struct.unpack('@i', sock.recv(4))[0]
+				layerNr += layerNrOffset
 				z = struct.unpack('@i', sock.recv(4))[0]
 				z = float(z) / 1000.0
 				typeNameLen = struct.unpack('@i', sock.recv(4))[0]
@@ -234,6 +246,8 @@ class Engine(object):
 					polygon[:,:-1] = polygon2d
 					polygon[:,2] = z
 					polygons[typeName].append(polygon)
+			elif cmd == self.GUI_CMD_FINISH_OBJECT:
+				layerNrOffset = len(self._result._polygons)
 			else:
 				print "Unknown command on socket: %x" % (cmd)
 
@@ -368,7 +382,7 @@ class Engine(object):
 		returnCode = self._process.wait()
 		logThread.join()
 		if returnCode == 0:
-			pluginError = plugin.runPostProcessingPlugins(self._result)
+			pluginError = pluginInfo.runPostProcessingPlugins(self._result)
 			if pluginError is not None:
 				print pluginError
 				self._result.addLog(pluginError)
@@ -471,6 +485,8 @@ class Engine(object):
 		settings['fanFullOnLayerNr'] = (fanFullHeight - settings['initialLayerThickness'] - 1) / settings['layerThickness'] + 1
 		if settings['fanFullOnLayerNr'] < 0:
 			settings['fanFullOnLayerNr'] = 0
+		if profile.getProfileSetting('support_type') == 'Lines':
+			settings['supportType'] = 1
 
 		if profile.getProfileSettingFloat('fill_density') == 0:
 			settings['sparseInfillLineDistance'] = -1
@@ -512,6 +528,8 @@ class Engine(object):
 			settings['layerThickness'] = 1000
 		if profile.getMachineSetting('gcode_flavor') == 'UltiGCode':
 			settings['gcodeFlavor'] = 1
+		elif profile.getMachineSetting('gcode_flavor') == 'MakerBot':
+			settings['gcodeFlavor'] = 2
 		if profile.getProfileSetting('spiralize') == 'True':
 			settings['spiralizeMode'] = 1
 		if profile.getProfileSetting('wipe_tower') == 'True' and extruderCount > 1:
