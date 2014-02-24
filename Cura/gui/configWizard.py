@@ -1027,6 +1027,7 @@ class bedLevelWizardMain(InfoPage):
 	def mcZChange(self, newZ):
 		pass
 
+
 class headOffsetCalibrationPage(InfoPage):
 	def __init__(self, parent):
 		super(headOffsetCalibrationPage, self).__init__(parent, "Printer head offset calibration")
@@ -1385,15 +1386,13 @@ class headZOffsetCalibrationPage(InfoPage):
 			return
 		if self.comm.isOperational():
 			if self._wizardState == 2:
-				#self.comm = machineCom.MachineCom()
-				#EI self.sendGCommand('M114')
 
 				self.comm.sendCommand('M114')
 				
 				line = ""
 				while True:
 					line = self.lastreply
-					#print line
+
 					if line.startswith('X'):
 						break
 					time.sleep(0.01)
@@ -1401,19 +1400,14 @@ class headZOffsetCalibrationPage(InfoPage):
 				start = line.find('Z')
 				stop = line.find('E',start)
 				if start > -1 and stop > -1:
-					#print "DEBUG line: %s" % line
 					val = float(line[start + 2:stop])
-					#print "DEBUG val: %s" % val
 					val = val * -1.0
-					#print "new Z value = %f" % val
 
 					self.comm.sendCommand('M501')
 
 					line = ""
 					while True:
 						line = self.lastreply
-						#print line
-						# echo:  M206 X0.00 Y0.00 Z3.90
 						if line.find("M206") > -1:
 							break
 						time.sleep(0.01)
@@ -1443,30 +1437,12 @@ class headZOffsetCalibrationPage(InfoPage):
 					wx.CallAfter(self.downButton.Enable, False)
 					
 				return
-				#try:
-				#	n = int(self.textEntry.GetValue()) - 1
-				#except:
-				#	return
-				#y = profile.getMachineSettingFloat('extruder_offset_y1')
-				#y += -1.0 + n * 0.1
-				#profile.putPreference('extruder_offset_y1', '%0.2f' % (y))
-				#self.infoBox.SetInfo('Calibration finished. Offsets are: %s %s' % (profile.getMachineSettingFloat('extruder_offset_x1'), profile.getMachineSettingFloat('extruder_offset_y1')))
-				#self.infoBox.SetReadyIndicator()
-				#self._wizardState = 8
-				#self.comm.close()
-				#self.resumeButton.Enable(False)
 
 	def mcLog(self, message):
 		print 'Log:', message
 
 	def mcTempUpdate(self, temp, bedTemp, targetTemp, bedTargetTemp):
 		pass
-#		if self._wizardState == 1:
-#			if temp[0] >= 210 and temp[1] >= 210:
-#				self._wizardState = 2
-#				wx.CallAfter(self.infoBox.SetAttention, 'Please load both extruders with PLA.')
-#				wx.CallAfter(self.resumeButton.Enable, True)
-#				wx.CallAfter(self.resumeButton.SetFocus)
 
 	def mcStateChange(self, state):
 		
@@ -1496,21 +1472,6 @@ class headZOffsetCalibrationPage(InfoPage):
 
 					wx.CallAfter(self.resumeButton.Enable, True)
 					wx.CallAfter(self.resumeButton.SetFocus)
-					
-#			elif self._wizardState == 2:
-#					self._wizardState = 3
-#					wx.CallAfter(self.infoBox.SetAttention, 'Please measure the distance between the vertical lines in millimeters.')
-#					wx.CallAfter(self.textEntry.SetValue, '0.0')
-#					wx.CallAfter(self.textEntry.Enable, True)
-#					wx.CallAfter(self.resumeButton.Enable, True)
-#					wx.CallAfter(self.resumeButton.SetFocus)
-#			elif self._wizardState == 6:
-#				self._wizardState = 7
-#				wx.CallAfter(self.infoBox.SetAttention, 'Which vertical line number lays perfect on top of each other? Leftmost line is zero.')
-#				wx.CallAfter(self.textEntry.SetValue, '10')
-#				wx.CallAfter(self.textEntry.Enable, True)
-#				wx.CallAfter(self.resumeButton.Enable, True)
-#				wx.CallAfter(self.resumeButton.SetFocus)
 
 		elif self.comm.isError():
 			wx.CallAfter(self.infoBox.SetError, _("Failed to establish connection with the printer."), 'http://wiki.ultimaker.com/Cura:_Connection_problems')
@@ -1528,13 +1489,116 @@ class headZOffsetCalibrationPage(InfoPage):
 	def mcZChange(self, newZ):
 		pass
 	
-	#def sendGCommand(self, cmd):
-#		self.comm.sendCommand(cmd)
-#		while True:
-#			line = self.comm.readline()
-#			if line == '':
-#				return ''
-#			if line.startswith('X'):
-#				return line
-#				break
-	
+
+class changeFilamentWizard(wx.wizard.Wizard):
+	def __init__(self):
+		super(changeFilamentWizard, self).__init__(None, -1, _("Change filament wizard"))
+
+		self.Bind(wx.wizard.EVT_WIZARD_PAGE_CHANGED, self.OnPageChanged)
+		self.Bind(wx.wizard.EVT_WIZARD_PAGE_CHANGING, self.OnPageChanging)
+
+		self.mainPage = changeFilamentWizardPage(self)
+
+		self.FitToPage(self.mainPage)
+		self.GetPageAreaSizer().Add(self.mainPage)
+
+		self.RunWizard(self.mainPage)
+		self.Destroy()
+
+	def OnPageChanging(self, e):
+		e.GetPage().StoreData()
+
+	def OnPageChanged(self, e):
+		if e.GetPage().AllowNext():
+			self.FindWindowById(wx.ID_FORWARD).Enable()
+		else:
+			self.FindWindowById(wx.ID_FORWARD).Disable()
+		self.FindWindowById(wx.ID_BACKWARD).Disable()
+
+
+class changeFilamentWizardPage(InfoPage):
+	def __init__(self, parent):
+		super(changeFilamentWizardPage, self).__init__(parent, _("Chage filament wizard"))
+
+		self.AddText(_("This wizard helps you change the printer filament"))
+		self.AddSeperator()
+
+		self.connectButton = self.AddButton(_("Connect to printer"))
+		self.comm = None
+
+		self.infoBox = self.AddInfoBox()
+
+		self.removeButton = self.AddButton(_("Remove old filament"))
+		self.removeButton.Enable(False)
+		self.AddSeperator()
+		self.resumeButton = self.AddButton(_("Load new filament"))
+		self.resumeButton.Enable(False)
+		self.AddSeperator()
+
+		self.Bind(wx.EVT_BUTTON, self.OnConnect, self.connectButton)
+		self.Bind(wx.EVT_BUTTON, self.OnResume, self.resumeButton)
+		self.Bind(wx.EVT_BUTTON, self.OnRemove, self.removeButton)
+
+		self.lastreply = ""
+
+	def OnRemove(self, e):
+		if self.comm is None:
+			return
+		if self.comm.isOperational():
+			self._wizardState = 1
+			self.comm.sendCommand('M109 T0 S240')
+			self.infoBox.SetBusy(_("Heating up."))
+
+	def OnConnect(self, e = None):
+		if self.comm is not None:
+			self.comm.close()
+			del self.comm
+			self.comm = None
+			wx.CallAfter(self.OnConnect)
+			return
+		self.connectButton.Enable(False)
+		self.comm = machineCom.MachineCom(callbackObject=self)
+		self.infoBox.SetBusy(_("Connecting to machine."))
+		self._wizardState = 0
+
+	def OnResume(self, e):
+		if self.comm is None:
+			return
+		if self.comm.isOperational():
+			if self._wizardState == 2:
+
+				self.comm.sendCommand('G1 F200 E10')
+				self.infoBox.SetBusy(_("Loading new filament..."))
+				self._wizardState = 0
+
+	def mcLog(self, message):
+		print 'Log:', message
+
+	def mcTempUpdate(self, temp, bedTemp, targetTemp, bedTargetTemp):
+		if self._wizardState == 1:
+			if temp[0] >= 235:
+				self._wizardState = 2
+				self.comm.sendCommand('G1 F200 E-20')
+				wx.CallAfter(self.infoBox.SetAttention, _('Please insert new filament to extruder.'))
+				wx.CallAfter(self.resumeButton.Enable, True)
+				wx.CallAfter(self.resumeButton.SetFocus)
+
+	def mcStateChange(self, state):
+		if self.comm is None:
+			return
+		if self.comm.isOperational():
+			if self._wizardState == 1:
+				wx.CallAfter(self.infoBox.SetBusy, _("Heating up."))
+
+	def mcMessage(self, message):
+		#print "DEBUG message: %s" % message
+
+		if message.startswith("X") or message.find("M206") > -1:
+			self.lastreply = message
+			#print "GOT IT"
+
+	def mcProgress(self, lineNr):
+		pass
+
+	def mcZChange(self, newZ):
+		pass
