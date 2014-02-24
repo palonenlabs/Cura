@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cura\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-18 16:07+0200\n"
+"POT-Creation-Date: 2014-02-24 13:22+0200\n"
 "PO-Revision-Date: 2013-10-02 14:50+0100\n"
 "Last-Translator: Jose Gemez <josegemez@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.7\n"
 
-#: Cura/gui/app.py:122 Cura/gui/mainWindow.py:554
+#: Cura/gui/app.py:122 Cura/gui/mainWindow.py:559
 msgid "A new version of Cura is available, would you like to download?"
 msgstr "Una nueva versión de Cura esta disponible, quieres descargarla?"
 
-#: Cura/gui/app.py:122 Cura/gui/mainWindow.py:554
+#: Cura/gui/app.py:122 Cura/gui/mainWindow.py:559
 msgid "New version available"
 msgstr "Nueva versión disponible"
 
@@ -268,7 +268,8 @@ msgstr "Final de carrera:"
 msgid "Show error log"
 msgstr "Mostrar log de errores"
 
-#: Cura/gui/configWizard.py:509 Cura/gui/configWizard.py:1380
+#: Cura/gui/configWizard.py:509 Cura/gui/configWizard.py:1381
+#: Cura/gui/configWizard.py:1561
 msgid "Connecting to machine."
 msgstr "Conectando a la maquina"
 
@@ -298,7 +299,7 @@ msgstr "Temperatura cama %d"
 msgid "Communication State: %s"
 msgstr "Estado de comunicación: %s"
 
-#: Cura/gui/configWizard.py:582 Cura/gui/configWizard.py:1514
+#: Cura/gui/configWizard.py:582 Cura/gui/configWizard.py:1477
 msgid "Failed to establish connection with the printer."
 msgstr "Fallo al establecer la conexión con la impresora"
 
@@ -395,60 +396,103 @@ msgstr ""
 "Error: Fallo al abrir el Puerto Serie de la maquina\n"
 "Si sigue ocurriendo, prueba a desconectar y reconectar el cable USB"
 
-#: Cura/gui/configWizard.py:1299
+#: Cura/gui/configWizard.py:1300
 #, fuzzy
 msgid "Head Z offset wizard"
 msgstr "Iniciar asistente de distancia entre extrusores..."
 
-#: Cura/gui/configWizard.py:1325
+#: Cura/gui/configWizard.py:1326
 #, fuzzy
 msgid "Printer head Z offset calibration"
 msgstr "Tamaño cabezal de impresión"
 
-#: Cura/gui/configWizard.py:1327
+#: Cura/gui/configWizard.py:1328
 #, fuzzy
 msgid "This wizard will help you in calibrating printer head Z offset."
 msgstr "Este asistente te ayudara con los siguientes pasos:"
 
-#: Cura/gui/configWizard.py:1328
+#: Cura/gui/configWizard.py:1329
 msgid ""
 "Please make sure printer bed is clear of objects and head is clear to move."
 msgstr ""
 
-#: Cura/gui/configWizard.py:1330
+#: Cura/gui/configWizard.py:1331
 msgid ""
 "Please adjust height with 'Up' and 'Down' buttons until normal\n"
 "A4 paper just barely moves between extruder nozzle and bed."
 msgstr ""
 
-#: Cura/gui/configWizard.py:1332
+#: Cura/gui/configWizard.py:1333 Cura/gui/configWizard.py:1526
 #, fuzzy
 msgid "Connect to printer"
 msgstr "Conectando a la maquina"
 
-#: Cura/gui/configWizard.py:1337
+#: Cura/gui/configWizard.py:1338
 msgid "Up"
 msgstr ""
 
-#: Cura/gui/configWizard.py:1339
+#: Cura/gui/configWizard.py:1340
 msgid "Down"
 msgstr ""
 
-#: Cura/gui/configWizard.py:1342
+#: Cura/gui/configWizard.py:1343
 msgid "OK, extruder touches paper now"
 msgstr ""
 
-#: Cura/gui/configWizard.py:1433
+#: Cura/gui/configWizard.py:1427
 #, python-format
 msgid "Done! Z calibration: %f"
 msgstr ""
 
-#: Cura/gui/configWizard.py:1475
+#: Cura/gui/configWizard.py:1453
 msgid "Homing printer ..."
 msgstr ""
 
-#: Cura/gui/configWizard.py:1489
+#: Cura/gui/configWizard.py:1467
 msgid "Please adjust with Up/Down until A4 just barely moves"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1495
+msgid "Change filament wizard"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1521
+msgid "Chage filament wizard"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1523
+#, fuzzy
+msgid "This wizard helps you change the printer filament"
+msgstr "Este asistente te ayudara con los siguientes pasos:"
+
+#: Cura/gui/configWizard.py:1531
+msgid "Remove old filament"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1534
+msgid "Load new filament"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1550 Cura/gui/configWizard.py:1598
+msgid "Heating up."
+msgstr ""
+
+#: Cura/gui/configWizard.py:1571
+#, fuzzy
+msgid "Loading new filament..."
+msgstr "Subiendo archivo %s..."
+
+#: Cura/gui/configWizard.py:1581
+#, python-format
+msgid "Heating up. %d / %d"
+msgstr ""
+
+#: Cura/gui/configWizard.py:1586
+msgid "Please insert new filament to extruder."
+msgstr ""
+
+#: Cura/gui/configWizard.py:1595
+msgid "Ok"
 msgstr ""
 
 #: Cura/gui/firmwareInstall.py:44
@@ -460,7 +504,7 @@ msgstr ""
 "configuración de tu maquina."
 
 #: Cura/gui/firmwareInstall.py:44 Cura/gui/firmwareInstall.py:48
-#: Cura/gui/firmwareInstall.py:103 Cura/gui/mainWindow.py:494
+#: Cura/gui/firmwareInstall.py:103 Cura/gui/mainWindow.py:496
 msgid "Firmware update"
 msgstr "Actualización firmware"
 
@@ -557,7 +601,7 @@ msgstr "Reseter Pefil a por defecto"
 msgid "Preferences...\tCTRL+,"
 msgstr "Preferencias...\tCTRL+,"
 
-#: Cura/gui/mainWindow.py:86 Cura/gui/mainWindow.py:424
+#: Cura/gui/mainWindow.py:86 Cura/gui/mainWindow.py:426
 msgid "Machine settings..."
 msgstr "Ajuste de la máquina..."
 
@@ -636,71 +680,76 @@ msgstr "Iniciar asistente de distancia entre extrusores..."
 msgid "Run head Z offset wizard..."
 msgstr "Iniciar asistente de distancia entre extrusores..."
 
-#: Cura/gui/mainWindow.py:166
+#: Cura/gui/mainWindow.py:165
+#, fuzzy
+msgid "Change Filament..."
+msgstr "Filamento"
+
+#: Cura/gui/mainWindow.py:168
 msgid "Expert"
 msgstr "Experto"
 
-#: Cura/gui/mainWindow.py:169
+#: Cura/gui/mainWindow.py:171
 msgid "Online documentation..."
 msgstr "Documentación online..."
 
-#: Cura/gui/mainWindow.py:171
+#: Cura/gui/mainWindow.py:173
 msgid "Report a problem..."
 msgstr "Reportar un problema..."
 
-#: Cura/gui/mainWindow.py:173
+#: Cura/gui/mainWindow.py:175
 msgid "Check for update..."
 msgstr "Comprobando actualizaciones..."
 
-#: Cura/gui/mainWindow.py:175
+#: Cura/gui/mainWindow.py:177
 msgid "Open YouMagine website..."
 msgstr "Abre tu página YouMagine"
 
-#: Cura/gui/mainWindow.py:177
+#: Cura/gui/mainWindow.py:179
 msgid "miniFactory keskustelufoorumit..."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:179
+#: Cura/gui/mainWindow.py:181
 msgid "miniFactory Facebook-sivu..."
 msgstr ""
 
-#: Cura/gui/mainWindow.py:181
+#: Cura/gui/mainWindow.py:183
 msgid "About Cura..."
 msgstr "Sobra Cura"
 
-#: Cura/gui/mainWindow.py:183
+#: Cura/gui/mainWindow.py:185
 msgid "Help"
 msgstr "Ayuda"
 
-#: Cura/gui/mainWindow.py:333
+#: Cura/gui/mainWindow.py:335
 msgid ""
 "For \"One at a time\" printing, you need to have entered the correct head "
 "size and gantry height in the machine settings"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:333
+#: Cura/gui/mainWindow.py:335
 msgid "One at a time warning"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:430
+#: Cura/gui/mainWindow.py:432
 #, fuzzy
 msgid "Install default firmware..."
 msgstr "Instalar firmware Marlin por defecto"
 
-#: Cura/gui/mainWindow.py:433
+#: Cura/gui/mainWindow.py:435
 #, fuzzy
 msgid "Install custom firmware..."
 msgstr "Instalar firmware personalizado"
 
-#: Cura/gui/mainWindow.py:437
+#: Cura/gui/mainWindow.py:439
 msgid "Select profile file to load"
 msgstr "Seleccion perfil a cargar"
 
-#: Cura/gui/mainWindow.py:449
+#: Cura/gui/mainWindow.py:451
 msgid "Select gcode file to load profile from"
 msgstr "Selección gcode para cargar perfil desde el"
 
-#: Cura/gui/mainWindow.py:462
+#: Cura/gui/mainWindow.py:464
 msgid ""
 "No profile found in GCode file.\n"
 "This feature only works with GCode files made by Cura 12.07 or newer."
@@ -708,15 +757,15 @@ msgstr ""
 "No se ha encontrado Perfil en el GCode.\n"
 "Esta caracteristicas solo funciona en versiones de Cura 12.07 o nuevas."
 
-#: Cura/gui/mainWindow.py:462
+#: Cura/gui/mainWindow.py:464
 msgid "Profile load error"
 msgstr "Carga de Perfil erronea"
 
-#: Cura/gui/mainWindow.py:466
+#: Cura/gui/mainWindow.py:468
 msgid "Select profile file to save"
 msgstr "Seleccion perfil para guardar"
 
-#: Cura/gui/mainWindow.py:474
+#: Cura/gui/mainWindow.py:476
 msgid ""
 "This will reset all profile settings to defaults.\n"
 "Unless you have saved your current profile, all settings will be lost!\n"
@@ -728,11 +777,11 @@ msgstr ""
 "perderán!\n"
 "¿Realmente desea reiniciar?"
 
-#: Cura/gui/mainWindow.py:474
+#: Cura/gui/mainWindow.py:476
 msgid "Profile reset"
 msgstr "Resetear Perfil"
 
-#: Cura/gui/mainWindow.py:494
+#: Cura/gui/mainWindow.py:496
 msgid ""
 "Warning: Installing a custom firmware does not guarantee that you machine "
 "will function correctly, and could damage your machine."
@@ -740,31 +789,31 @@ msgstr ""
 "Advertencia: Instalando un firmware personalizado no garantizamos el "
 "correcto funcionamiento de la impresora y se podría dañar"
 
-#: Cura/gui/mainWindow.py:495
+#: Cura/gui/mainWindow.py:497
 msgid "Open firmware to upload"
 msgstr "Abrir firmware para cargar"
 
-#: Cura/gui/mainWindow.py:557
+#: Cura/gui/mainWindow.py:562
 msgid "You are running the latest version of Cura!"
 msgstr "Estas usando la última versión de Cura!"
 
-#: Cura/gui/mainWindow.py:557
+#: Cura/gui/mainWindow.py:562
 msgid "Awesome!"
 msgstr "Im-presionante!"
 
-#: Cura/gui/mainWindow.py:602
+#: Cura/gui/mainWindow.py:607
 msgid "Basic"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:606
+#: Cura/gui/mainWindow.py:611
 msgid "Advanced"
 msgstr ""
 
-#: Cura/gui/mainWindow.py:612
+#: Cura/gui/mainWindow.py:617
 msgid "Plugins"
 msgstr "Plugins"
 
-#: Cura/gui/mainWindow.py:619
+#: Cura/gui/mainWindow.py:624
 msgid "Start/End-GCode"
 msgstr ""
 

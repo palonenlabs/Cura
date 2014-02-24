@@ -1457,7 +1457,7 @@ class headZOffsetCalibrationPage(InfoPage):
 
 				self.comm.sendCommand('G28')
 				self.comm.sendCommand('G90')
-				self.comm.sendCommand('G1 X%d Y%d Z-0.1 F%d' % (w/2, d/2, (profile.getProfileSettingFloat('print_speed')*20)))
+				self.comm.sendCommand('G1 X%d Y%d Z0 F%d' % (w/2, d/2, (profile.getProfileSettingFloat('print_speed')*20)))
 				self._wizardState = 1
 				self.resumeButton.Enable(True)
 				wx.CallAfter(self.resumeButton.SetFocus)
@@ -1567,16 +1567,20 @@ class changeFilamentWizardPage(InfoPage):
 		if self.comm.isOperational():
 			if self._wizardState == 2:
 
-				self.comm.sendCommand('G1 F200 E10')
-				self.infoBox.SetBusy(_("Loading new filament..."))
-				self._wizardState = 0
+				self.comm.sendCommand('G1 F200 E50')
+				self.infoBox.SetAttention(_("Loading new filament..."))
+				self._wizardState = 3
+				wx.CallAfter(self.connectButton.Enable, False)
+				wx.CallAfter(self.removeButton.Enable, False)
 
 	def mcLog(self, message):
 		print 'Log:', message
 
 	def mcTempUpdate(self, temp, bedTemp, targetTemp, bedTargetTemp):
 		if self._wizardState == 1:
-			if temp[0] >= 235:
+			wx.CallAfter(self.infoBox.SetBusy, _("Heating up. %d / %d" % (temp[0], targetTemp[0])))
+			
+			if temp[0] >= 240:
 				self._wizardState = 2
 				self.comm.sendCommand('G1 F200 E-20')
 				wx.CallAfter(self.infoBox.SetAttention, _('Please insert new filament to extruder.'))
@@ -1587,6 +1591,9 @@ class changeFilamentWizardPage(InfoPage):
 		if self.comm is None:
 			return
 		if self.comm.isOperational():
+			if self._wizardState == 0:
+				wx.CallAfter(self.infoBox.SetAttention, _("Ok"))
+				self.removeButton.Enable(True)
 			if self._wizardState == 1:
 				wx.CallAfter(self.infoBox.SetBusy, _("Heating up."))
 
